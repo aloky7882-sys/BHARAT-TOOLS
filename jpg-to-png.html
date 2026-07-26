@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JPG to PNG Converter - Bharat Tools</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f5f5f5;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.container{
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 20px rgba(0,0,0,.1);
+max-width:700px;
+width:100%;
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+margin:15px 0;
+}
+
+img{
+width:100%;
+margin-top:20px;
+display:none;
+border-radius:10px;
+}
+
+button{
+width:100%;
+padding:15px;
+margin-top:15px;
+background:#0d6efd;
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🖼 JPG to PNG Converter</h1>
+
+<input type="file" id="upload" accept=".jpg,.jpeg,image/jpeg">
+
+<img id="preview">
+
+<button id="download" style="display:none;">Download PNG</button>
+
+</div>
+
+<script>
+
+const upload=document.getElementById("upload");
+const preview=document.getElementById("preview");
+const download=document.getElementById("download");
+
+let pngImage="";
+
+upload.onchange=function(){
+
+const file=this.files[0];
+
+if(!file) return;
+
+const reader=new FileReader();
+
+reader.onload=function(e){
+
+const img=new Image();
+
+img.onload=function(){
+
+const canvas=document.createElement("canvas");
+const ctx=canvas.getContext("2d");
+
+canvas.width=img.width;
+canvas.height=img.height;
+
+ctx.drawImage(img,0,0);
+
+pngImage=canvas.toDataURL("image/png");
+
+preview.src=pngImage;
+preview.style.display="block";
+
+download.style.display="block";
+
+}
+
+img.src=e.target.result;
+
+}
+
+reader.readAsDataURL(file);
+
+}
+
+download.onclick=function(){
+
+const a=document.createElement("a");
+
+a.href=pngImage;
+a.download="converted-image.png";
+a.click();
+
+}
+
+</script>
+
+</body>
+</html>

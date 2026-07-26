@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Generator - Bharat Tools</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6fb;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.container{
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,.1);
+text-align:center;
+width:90%;
+max-width:500px;
+}
+
+input{
+width:100%;
+padding:15px;
+font-size:16px;
+margin:20px 0;
+border:1px solid #ddd;
+border-radius:8px;
+}
+
+button{
+background:#0d6efd;
+color:white;
+border:none;
+padding:15px 30px;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+background:#084298;
+}
+
+img{
+margin-top:25px;
+display:none;
+max-width:250px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📱 QR Code Generator</h1>
+
+<input type="text" id="text" placeholder="Enter text or URL">
+
+<button onclick="generateQR()">Generate QR</button>
+
+<br>
+
+<img id="qr">
+
+</div>
+
+<script>
+
+function generateQR(){
+
+let text=document.getElementById("text").value;
+
+let qr=document.getElementById("qr");
+
+if(text==""){
+
+alert("Enter Text");
+
+return;
+
+}
+
+qr.src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data="+encodeURIComponent(text);
+
+qr.style.display="block";
+
+}
+
+</script>
+
+</body>
+</html>

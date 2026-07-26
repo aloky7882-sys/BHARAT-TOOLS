@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Resizer - Bharat Tools</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6fb;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.container{
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,.1);
+width:100%;
+max-width:700px;
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+}
+
+input[type=file]{
+width:100%;
+margin:15px 0;
+}
+
+input[type=number]{
+width:48%;
+padding:12px;
+margin:10px 1%;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:15px;
+background:#0d6efd;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+margin-top:15px;
+font-size:16px;
+}
+
+img{
+width:100%;
+margin-top:20px;
+display:none;
+border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🖼 Image Resizer</h1>
+
+<input type="file" id="upload" accept="image/*">
+
+<div>
+<input type="number" id="width" placeholder="Width">
+<input type="number" id="height" placeholder="Height">
+</div>
+
+<button onclick="resizeImage()">Resize Image</button>
+
+<img id="preview">
+
+<button id="download" style="display:none;">Download</button>
+
+</div>
+
+<script>
+
+let uploadedImage="";
+
+document.getElementById("upload").addEventListener("change",function(){
+
+const file=this.files[0];
+
+if(!file) return;
+
+const reader=new FileReader();
+
+reader.onload=function(e){
+
+uploadedImage=e.target.result;
+
+const img=new Image();
+
+img.onload=function(){
+
+document.getElementById("width").value=img.width;
+document.getElementById("height").value=img.height;
+
+}
+
+img.src=uploadedImage;
+
+}
+
+reader.readAsDataURL(file);
+
+});
+
+function resizeImage(){
+
+const img=new Image();
+
+img.onload=function(){
+
+const canvas=document.createElement("canvas");
+
+const ctx=canvas.getContext("2d");
+
+canvas.width=parseInt(document.getElementById("width").value);
+
+canvas.height=parseInt(document.getElementById("height").value);
+
+ctx.drawImage(img,0,0,canvas.width,canvas.height);
+
+const data=canvas.toDataURL("image/png");
+
+document.getElementById("preview").src=data;
+document.getElementById("preview").style.display="block";
+
+const download=document.getElementById("download");
+
+download.style.display="block";
+
+download.onclick=function(){
+
+const a=document.createElement("a");
+
+a.href=data;
+
+a.download="resized-image.png";
+
+a.click();
+
+}
+
+}
+
+img.src=uploadedImage;
+
+}
+
+</script>
+
+</body>
+</html>
