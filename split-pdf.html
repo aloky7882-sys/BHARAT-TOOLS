@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Split PDF - Bharat Tools</title>
+
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6fb;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.container{
+background:#fff;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 20px rgba(0,0,0,.1);
+width:100%;
+max-width:700px;
+text-align:center;
+}
+
+h1{
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+margin:15px 0;
+padding:10px;
+}
+
+button{
+padding:15px 25px;
+background:#0d6efd;
+color:#fff;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:18px;
+margin-top:20px;
+}
+
+button:hover{
+background:#084298;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>✂️ Split PDF</h1>
+
+<input type="file" id="upload" accept=".pdf">
+
+<input type="number" id="page" placeholder="Enter Page Number">
+
+<button onclick="splitPDF()">
+
+Split & Download
+
+</button>
+
+</div>
+
+<script>
+
+async function splitPDF(){
+
+const file=document.getElementById("upload").files[0];
+
+const pageNo=parseInt(document.getElementById("page").value);
+
+if(!file){
+
+alert("Select PDF");
+
+return;
+
+}
+
+const bytes=await file.arrayBuffer();
+
+const pdf=await PDFLib.PDFDocument.load(bytes);
+
+if(pageNo<1 || pageNo>pdf.getPageCount()){
+
+alert("Invalid Page Number");
+
+return;
+
+}
+
+const newPdf=await PDFLib.PDFDocument.create();
+
+const [page]=await newPdf.copyPages(pdf,[pageNo-1]);
+
+newPdf.addPage(page);
+
+const pdfBytes=await newPdf.save();
+
+const blob=new Blob([pdfBytes],{type:"application/pdf"});
+
+const link=document.createElement("a");
+
+link.href=URL.createObjectURL(blob);
+
+link.download="Split-PDF-Page-"+pageNo+".pdf";
+
+link.click();
+
+}
+
+</script>
+
+</body>
+</html>
