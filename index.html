@@ -3,46 +3,123 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BHARAT TOOLS - Free Online Tools</title>
-
+<title>⚡ BHARAT-TOOLS 🚀 - Free Online Tools</title>
 <link rel="stylesheet" href="style.css">
+<style>
+    /* Sections ko smooth scroll karne ke liye */
+    html { scroll-behavior: smooth; }
+    .section-title { width: 100%; text-align: center; margin: 30px 0 10px 0; color: #333; font-size: 22px; font-weight: bold; border-bottom: 2px solid #ff9933; padding-bottom: 5px; }
+    .footer-links { margin: 15px 0; }
+    .footer-links a { color: #aaa; text-decoration: none; margin: 0 10px; font-size: 14px; transition: color 0.2s; }
+    .footer-links a:hover { color: #ff9933; }
 
+    /* Live Animated Emoji Logo Setup */
+    .live-emoji-container {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .live-flash {
+        animation: flashAnimation 1.2s infinite ease-in-out;
+        display: inline-block;
+    }
+    .live-rocket {
+        animation: rocketAnimation 2s infinite ease-in-out;
+        display: inline-block;
+    }
+
+    /* ⚡ Emoji ke liye chamakne (Blink) ka live effect */
+    @keyframes flashAnimation {
+        0%, 100% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 2px #ffcc00); }
+        50% { transform: scale(1.15); opacity: 0.7; filter: drop-shadow(0 0 8px #ff9933); }
+    }
+
+    /* 🚀 Emoji ke liye hawa me tairne (Floating) ka live effect */
+    @keyframes rocketAnimation {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-4px) translateX(2px) rotate(3deg); }
+    }
+
+    /* 🇮🇳 Tiranga Live Wave Text Effect Setup */
+    .tiranga-text {
+        display: inline-flex;
+        font-weight: 900;
+        letter-spacing: 1px;
+    }
+    .tiranga-text span {
+        display: inline-block;
+        animation: waveAnimation 1.5s infinite ease-in-out;
+    }
+    
+    /* Har akshar ke liye live laharane (wave delay) ka time */
+    .tiranga-text span:nth-child(1) { animation-delay: 0.1s; color: #FF9933; } /* B - Saffron */
+    .tiranga-text span:nth-child(2) { animation-delay: 0.2s; color: #FF9933; } /* H - Saffron */
+    .tiranga-text span:nth-child(3) { animation-delay: 0.3s; color: #FF9933; } /* A - Saffron */
+    .tiranga-text span:nth-child(4) { animation-delay: 0.4s; color: #FF9933; } /* R - Saffron */
+    .tiranga-text span:nth-child(5) { animation-delay: 0.5s; color: #555555; text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff; } /* A - White/Ash with border */
+    .tiranga-text span:nth-child(6) { animation-delay: 0.6s; color: #000080; text-shadow: 1px 1px 0 #fff; } /* T - Navy Blue (Ashok Chakra color) */
+    .tiranga-text span:nth-child(7) { animation-delay: 0.7s; color: #555555; text-shadow: 1px 1px 0 #fff; } /* - - White/Ash */
+    .tiranga-text span:nth-child(8) { animation-delay: 0.8s; color: #138808; } /* T - Green */
+    .tiranga-text span:nth-child(9) { animation-delay: 0.9s; color: #138808; } /* O - Green */
+    .tiranga-text span:nth-child(10) { animation-delay: 1.0s; color: #138808; } /* O - Green */
+    .tiranga-text span:nth-child(11) { animation-delay: 1.1s; color: #138808; } /* L - Green */
+    .tiranga-text span:nth-child(12) { animation-delay: 1.2s; color: #138808; } /* S - Green */
+
+    @keyframes waveAnimation {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+</style>
 </head>
 <body>
 
 <!-- Navbar -->
 <nav class="navbar">
-    <div class="logo">🇮🇳 BHARAT TOOLS</div>
-
+    <div class="logo">
+        🇮🇳 <div class="live-emoji-container">
+            <span class="live-flash">⚡</span> 
+            <span class="tiranga-text">
+                <span>B</span><span>H</span><span>A</span><span>R</span><span>A</span><span>T</span><span>-</span><span>T</span><span>O</span><span>O</span><span>L</span><span>S</span>
+            </span>
+            <span class="live-rocket">🚀</span>
+        </div>
+    </div>
     <ul class="menu">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Image Tools</a></li>
-        <li><a href="#">PDF Tools</a></li>
-        <li><a href="#">Calculators</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#image-section">Image Tools</a></li>
+        <li><a href="#pdf-section">PDF Tools</a></li>
+        <li><a href="#calculator-section">Calculators</a></li>
+        <li><a href="contact.html">Contact</a></li>
     </ul>
 </nav>
 
 <!-- Header -->
 <header>
-    <h1>🚀 BHARAT TOOLS</h1>
+    <h1>
+        <div class="live-emoji-container">
+            <span class="live-flash">⚡</span> 
+            <span class="tiranga-text" style="font-size: 1.2em;">
+                <span>B</span><span>H</span><span>A</span><span>R</span><span>A</span><span>T</span><span>-</span><span>T</span><span>O</span><span>O</span><span>L</span><span>S</span>
+            </span>
+            <span class="live-rocket">🚀</span>
+        </div>
+    </h1>
     <p>100% Free Online Tools</p>
 </header>
 
 <!-- Hero Section -->
 <section class="hero">
-
     <h2>100+ Free Online Tools</h2>
-
     <p>Image, PDF, Calculator, QR Code, Password, Text & More.</p>
-
     <input type="text" id="search" placeholder="Search your tool...">
 
 
-
-<!-- Tool Cards -->
+<!-- Tool Cards Container -->
 <div class="container">
 
+    <!-- IMAGE TOOLS SECTION -->
+    <div id="image-section" class="section-title">🖼️ Image Utility Tools</div>
+    
     <!-- Image Compressor -->
     <div class="card">
         <h2>🖼 Image Compressor</h2>
@@ -88,6 +165,10 @@
         </a>
     </div>
 
+
+    <!-- PDF TOOLS SECTION -->
+    <div id="pdf-section" class="section-title">📄 PDF Utility Tools</div>
+
     <!-- JPG to PDF -->
     <div class="card">
         <h2>📄 JPG to PDF</h2>
@@ -123,6 +204,10 @@
             <button>Open Tool</button>
         </a>
     </div>
+
+
+    <!-- CALCULATORS & OTHER TOOLS SECTION -->
+    <div id="calculator-section" class="section-title">🧮 Calculators & Generators</div>
 
     <!-- QR Generator -->
     <div class="card">
@@ -178,9 +263,26 @@
 
 </div>
 
-<!-- Footer -->
-<footer style="text-align:center;padding:25px;background:#111;color:white;margin-top:40px;">
-    © 2026 BHARAT TOOLS | Made with ❤️ by Alok
+<!-- Footer with Working Legal Pages -->
+<footer style="text-align:center;padding:35px;background:#111;color:white;margin-top:40px;">
+    <div class="footer-links">
+        <a href="about.html">About Us</a> | 
+        <a href="privacy-policy.html">Privacy Policy</a> | 
+        <a href="terms.html">Terms & Conditions</a> | 
+        <a href="cookies.html">Cookies Policy</a> |
+        <a href="contact.html">Contact Us</a>
+    </div>
+    <p style="font-size: 13px; color: #777; margin-top: 10px;">
+        © 2026 
+        <div class="live-emoji-container">
+            <span class="live-flash">⚡</span> 
+            <span class="tiranga-text" style="font-size:0.9em;">
+                <span>B</span><span>H</span><span>A</span><span>R</span><span>A</span><span>T</span><span>-</span><span>T</span><span>O</span><span>O</span><span>L</span><span>S</span>
+            </span>
+            <span class="live-rocket">🚀</span>
+        </div> 
+        | Made with ❤️ by Alok
+    </p>
 </footer>
 
 <script src="script.js"></script>

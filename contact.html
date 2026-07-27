@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - BHARAT TOOLS</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .contact-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .contact-info {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+        .contact-info p {
+            margin: 15px 0;
+            font-size: 16px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        .contact-info a {
+            color: #0056b3;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .contact-info a.wa-link {
+            color: #138808;
+        }
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #444;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .submit-btn {
+            background: #ff9933;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+        }
+        .submit-btn:hover {
+            background: #e68a00;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">🇮🇳 BHARAT TOOLS</div>
+    <ul class="menu">
+        <li><a href="index.html">Home</a></li>
+    </ul>
+</nav>
+
+<div class="contact-container">
+    <h2>📩 Contact Us</h2>
+    <p style="color: #666; margin-bottom: 20px;">If you have any questions, feedback, or need support, feel free to reach out to us.</p>
+    
+    <!-- Direct Contact Details Linked Globally -->
+    <div class="contact-info">
+        <p>📧 <strong>Email:</strong> <a href="mailto:aloky7882@gmail.com">aloky7882@gmail.com</a></p>
+        <p>📞 <strong>Phone:</strong> <a href="tel:+918881440719">+91 8881440719</a></p>
+        <p>💬 <strong>WhatsApp:</strong> <a href="https://wa.me." target="_blank" class="wa-link">Chat on WhatsApp</a></p>
+    </div>
+
+    <!-- Contact Form -->
+    <form action="https://formspree.io" method="POST">
+        <div class="form-group">
+            <label>Your Name:</label>
+            <input type="text" name="name" placeholder="Enter your name" required>
+        </div>
+        <div class="form-group">
+            <label>Your Email:</label>
+            <input type="email" name="email" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+            <label>Message:</label>
+            <textarea name="message" rows="5" placeholder="Type your message here..." required></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Send Message</button>
+    </form>
+</div>
+
+<footer style="text-align:center;padding:25px;background:#111;color:white;margin-top:40px;">
+    © 2026 BHARAT TOOLS | Made with ❤️ by Alok
+</footer>
+
+</body>
+</html>
