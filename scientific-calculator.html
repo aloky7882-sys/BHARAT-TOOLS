@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scientific Calculator - Bharat Tools</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#0f172a;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.calculator{
+
+width:380px;
+background:#1e293b;
+padding:20px;
+border-radius:20px;
+box-shadow:0 0 20px rgba(0,0,0,.4);
+
+}
+
+#display{
+
+width:100%;
+height:70px;
+font-size:32px;
+padding:15px;
+text-align:right;
+border:none;
+border-radius:10px;
+background:#0f172a;
+color:#fff;
+margin-bottom:20px;
+
+}
+
+.buttons{
+
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+
+}
+
+button{
+
+height:60px;
+border:none;
+border-radius:10px;
+font-size:18px;
+cursor:pointer;
+background:#334155;
+color:#fff;
+transition:.3s;
+
+}
+
+button:hover{
+
+background:#475569;
+
+}
+
+.operator{
+
+background:#2563eb;
+
+}
+
+.operator:hover{
+
+background:#1d4ed8;
+
+}
+
+.equal{
+
+background:#16a34a;
+
+}
+
+.equal:hover{
+
+background:#15803d;
+
+}
+
+.clear{
+
+background:#dc2626;
+
+}
+
+.clear:hover{
+
+background:#b91c1c;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="calculator">
+
+<input type="text" id="display" readonly>
+
+<div class="buttons">
+
+<button class="clear" onclick="clr()">AC</button>
+<button onclick="back()">⌫</button>
+<button onclick="insert('(')">(</button>
+<button onclick="insert(')')">)</button>
+<button class="operator" onclick="insert('/')">÷</button>
+
+<button onclick="insert('7')">7</button>
+<button onclick="insert('8')">8</button>
+<button onclick="insert('9')">9</button>
+<button onclick="insert('*')">×</button>
+<button onclick="sqrt()">√</button>
+
+<button onclick="insert('4')">4</button>
+<button onclick="insert('5')">5</button>
+<button onclick="insert('6')">6</button>
+<button onclick="insert('-')">-</button>
+<button onclick="square()">x²</button>
+
+<button onclick="insert('1')">1</button>
+<button onclick="insert('2')">2</button>
+<button onclick="insert('3')">3</button>
+<button onclick="insert('+')">+</button>
+<button onclick="percent()">%</button>
+
+<button onclick="insert('0')">0</button>
+<button onclick="insert('.')">.</button>
+<button onclick="insert('3.1415926535')">π</button>
+<button onclick="insert('2.718281828')">e</button>
+<button class="equal" onclick="calculate()">=</button>
+
+<button onclick="sin()">sin</button>
+<button onclick="cos()">cos</button>
+<button onclick="tan()">tan</button>
+<button onclick="log()">log</button>
+<button onclick="ln()">ln</button>
+
+</div>
+
+</div>
+
+<script>
+
+let display=document.getElementById("display");
+
+function insert(value){
+
+display.value+=value;
+
+}
+
+function clr(){
+
+display.value="";
+
+}
+
+function back(){
+
+display.value=display.value.slice(0,-1);
+
+}
+
+function calculate(){
+
+try{
+
+display.value=eval(display.value);
+
+}catch{
+
+display.value="Error";
+
+}
+
+}
+
+function sqrt(){
+
+display.value=Math.sqrt(eval(display.value));
+
+}
+
+function square(){
+
+display.value=Math.pow(eval(display.value),2);
+
+}
+
+function percent(){
+
+display.value=eval(display.value)/100;
+
+}
+
+function sin(){
+
+display.value=Math.sin(eval(display.value)*Math.PI/180);
+
+}
+
+function cos(){
+
+display.value=Math.cos(eval(display.value)*Math.PI/180);
+
+}
+
+function tan(){
+
+display.value=Math.tan(eval(display.value)*Math.PI/180);
+
+}
+
+function log(){
+
+display.value=Math.log10(eval(display.value));
+
+}
+
+function ln(){
+
+display.value=Math.log(eval(display.value));
+
+}
+
+</script>
+
+</body>
+</html>
