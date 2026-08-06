@@ -7,14 +7,14 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cloudflare.com">
     
-    <!-- Stable Required Libraries -->
+    <!-- Required Stable Libraries -->
     <script src="https://cloudflare.com"></script>
     <script src="https://cloudflare.com"></script>
 
     <style>
         .converter-box { 
-            max-width: 700px; 
-            margin: 50px auto; 
+            max-width: 600px; 
+            margin: 80px auto; 
             padding: 30px; 
             background: #fff; 
             border-radius: 12px; 
@@ -43,36 +43,6 @@
         }
         #status { margin-top: 15px; font-weight: 500; color: #28a745; }
         .back-link { display: inline-block; margin-top: 20px; color: #6c757d; text-decoration: none; }
-        
-        /* Preview Table Styles */
-        #preview-area {
-            display: none;
-            margin-top: 25px;
-            overflow-x: auto;
-            text-align: left;
-            background: #ffffff;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-        }
-        .excel-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-        }
-        .excel-table th {
-            background-color: #f2f2f2;
-            color: #333;
-            font-weight: bold;
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        .excel-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            color: #555;
-        }
     </style>
 </head>
 <body>
@@ -92,12 +62,6 @@
         
         <button class="action-btn" id="convert-btn">Convert & Download PDF</button>
         <div id="status"></div>
-
-        <!-- Dynamic Hidden Table Area For PDF Generation -->
-        <div id="preview-area">
-            <table id="data-table" class="excel-table"></table>
-        </div>
-
         <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
     </div>
 
@@ -111,65 +75,60 @@
                 document.getElementById('file-name').innerText = "Selected: " + file.name;
                 document.getElementById('convert-btn').style.display = 'block';
                 document.getElementById('status').innerText = "";
-                document.getElementById('preview-area').style.display = 'none';
-                
-                // Read Excel data to construct stable HTML preview
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const data = new Uint8Array(event.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheetName = workbook.SheetNames[0];
-                    const sheet = workbook.Sheets[firstSheetName];
-                    const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-                    
-                    const table = document.getElementById('data-table');
-                    table.innerHTML = "";
-                    
-                    json.forEach((row, rowIndex) => {
-                        const tr = document.createElement('tr');
-                        row.forEach(cell => {
-                            const element = rowIndex === 0 ? document.createElement('th') : document.createElement('td');
-                            element.innerText = cell !== undefined && cell !== null ? cell : "";
-                            tr.appendChild(element);
-                        });
-                        table.appendChild(tr);
-                    });
-                };
-                reader.readAsArrayBuffer(file);
             }
         });
 
         document.getElementById('convert-btn').addEventListener('click', function() {
-            const tableElement = document.getElementById('data-table');
-            if (tableElement.rows.length === 0) {
-                document.getElementById('status').innerText = "❌ No data found to convert.";
-                document.getElementById('status').style.color = "#dc3545";
-                return;
-            }
+            const fileInput = document.getElementById('excel-file');
+            const file = fileInput.files[0];
+            if (!file) return;
 
-            document.getElementById('status').innerText = "Generating PDF... Please wait.";
+            document.getElementById('status').innerText = "Converting... Please wait.";
             document.getElementById('status').style.color = "#0d6efd";
-            document.getElementById('preview-area').style.display = 'block';
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    const firstSheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[firstSheetName];
+                    const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-            // HTML to Direct PDF Conversion Options
-            const opt = {
-                margin: 30,
-                filename: fName,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+                    if (json.length === 0) {
+                        document.getElementById('status').innerText = "❌ The selected Excel file is empty.";
+                        document.getElementById('status').style.color = "#dc3545";
+                        return;
+                    }
+
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('p', 'pt', 'a4');
+                    
+                    let yPosition = 40;
+                    
+                    json.forEach((row) => {
+                        const lineText = row.map(cell => cell === undefined || cell === null ? "" : String(cell)).join(" | ");
+                        
+                        if (yPosition > 800) {
+                            doc.addPage();
+                            yPosition = 40;
+                        }
+                        
+                        doc.text(lineText, 40, yPosition);
+                        yPosition += 25;
+                    });
+
+                    doc.save(fName);
+                    document.getElementById('status').innerText = "🎉 PDF Downloaded Successfully!";
+                    document.getElementById('status').style.color = "#28a745";
+                } catch (err) {
+                    document.getElementById('status').innerText = "❌ Error processing Excel file.";
+                    document.getElementById('status').style.color = "#dc3545";
+                    console.error(err);
+                }
             };
-
-            // Stable Trigger Action
-            html2pdf().set(opt).from(tableElement).save().then(() => {
-                document.getElementById('status').innerText = "🎉 PDF Downloaded Successfully!";
-                document.getElementById('status').style.color = "#28a745";
-                document.getElementById('preview-area').style.display = 'none';
-            }).catch(err => {
-                document.getElementById('status').innerText = "❌ Download failed. Please try again.";
-                document.getElementById('status').style.color = "#dc3545";
-                console.error(err);
-            });
+            reader.readAsArrayBuffer(file);
         });
     </script>
 </body>
