@@ -1,540 +1,642 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Excel to PDF Converter - BHARAT TOOLS</title>
+    <title>Excel to PDF Converter - BHARAT TOOLS</title>
 
-<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 
-<!-- Font Awesome -->
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-<!-- Excel Reader -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Excel Reader -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-<!-- HTML to PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- HTML to PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-<style>
-    .converter-box { 
-        max-width: 650px; 
-        margin: 80px auto; 
-        padding: 40px 30px; 
-        background: #fff; 
-        border-radius: 16px; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
-        text-align: center; 
-    }
+    <style>
+        .converter-box { 
+            max-width: 650px; 
+            margin: 80px auto; 
+            padding: 40px 30px; 
+            background: #fff; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            text-align: center; 
+        }
 
-    .upload-zone { 
-        border: 2px dashed #0d6efd; 
-        padding: 50px 20px; 
-        border-radius: 12px; 
-        background: #f8f9fa; 
-        cursor: pointer; 
-        margin: 25px 0; 
-        position: relative;
-        transition: 0.3s;
-    }
+        .upload-zone { 
+            border: 2px dashed #0d6efd; 
+            padding: 50px 20px; 
+            border-radius: 12px; 
+            background: #f8f9fa; 
+            cursor: pointer; 
+            margin: 25px 0; 
+            position: relative;
+            transition: 0.3s;
+        }
 
-    .upload-zone:hover {
-        background: #f1f3f5;
-        border-color: #0b5ed7;
-    }
+        .upload-zone:hover {
+            background: #f1f3f5;
+            border-color: #0b5ed7;
+        }
 
-    .upload-zone input { 
-        position: absolute; 
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%; 
-        opacity: 0;
-        cursor: pointer; 
-    }
+        .upload-zone input { 
+            position: absolute; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%; 
+            opacity: 0;
+            cursor: pointer; 
+        }
 
-    .action-btn { 
-        background: #0d6efd;
-        color: #fff;
-        border: none; 
-        padding: 14px 30px;
-        font-size: 16px;
-        border-radius: 8px; 
-        cursor: pointer;
-        display: none;
-        margin: 20px auto; 
-        font-weight: 600;
-        width: 100%;
-        transition: 0.2s;
-    }
+        .action-btn { 
+            background: #0d6efd;
+            color: #fff;
+            border: none; 
+            padding: 14px 30px;
+            font-size: 16px;
+            border-radius: 8px; 
+            cursor: pointer;
+            display: none;
+            margin: 20px auto; 
+            font-weight: 600;
+            width: 100%;
+            transition: 0.2s;
+        }
 
-    .action-btn:hover {
-        background: #0b5ed7;
-    }
+        .action-btn:hover {
+            background: #0b5ed7;
+        }
 
-    #status {
-        margin-top: 15px;
-        font-weight: 600;
-        color: #0d6efd;
-        font-size: 15px;
-    }
+        #status {
+            margin-top: 15px;
+            font-weight: 600;
+            color: #0d6efd;
+            font-size: 15px;
+        }
 
-    .back-link {
-        display: inline-block;
-        margin-top: 25px;
-        color: #6c757d;
-        text-decoration: none;
-        font-weight: 500;
-    }
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #6c757d;
+            text-decoration: none;
+            font-weight: 500;
+        }
 
-    .back-link:hover {
-        color: #212529;
-    }
+        .back-link:hover {
+            color: #212529;
+        }
 
-    /* Background Dynamic PDF Table Design */
-    #hidden-pdf-render {
-        position: absolute;
-        left: -9999px;
-        top: -9999px;
-        width: 700px;
-        background: #fff;
-    }
+        /* Background Dynamic PDF Table Design */
+        #hidden-pdf-render {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            width: 700px;
+            background: #fff;
+        }
 
-    .pro-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-size: 11px;
-        margin: 20px 0;
-        background: #fff;
-    }
+        .pro-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 11px;
+            margin: 20px 0;
+            background: #fff;
+        }
 
-    .pro-table th {
-        background-color: #0d6efd;
-        color: white;
-        font-weight: bold;
-        border: 1px solid #dee2e6;
-        padding: 10px 8px;
-        text-align: left;
-    }
+        .pro-table th {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: bold;
+            border: 1px solid #dee2e6;
+            padding: 10px 8px;
+            text-align: left;
+        }
 
-    .pro-table td {
-        border: 1px solid #dee2e6;
-        padding: 8px;
-        color: #333;
-        text-align: left;
-    }
+        .pro-table td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            color: #333;
+            text-align: left;
+        }
 
-    .pro-table tr:nth-child(even) {
-        background-color: #f8f9fa;
-    }
-</style>
-
+        .pro-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="converter-box">
+    <div class="converter-box">
 
-    <div style="font-size: 55px; margin-bottom: 15px; color: #0d6efd;">
-        <i class="fa-solid fa-file-excel"></i>
-    </div>
+        <div style="font-size: 55px; margin-bottom: 15px; color: #0d6efd;">
+            <i class="fa-solid fa-file-excel"></i>
+        </div>
 
-    <h2>Excel to PDF Converter</h2>
+        <h2>Excel to PDF Converter</h2>
 
-    <p style="color: #6c757d;">
-        Convert Excel spreadsheets (.xlsx, .xls) into clean, professional PDF documents instantly.
-    </p>
-
-    <div class="upload-zone">
-
-        <i class="fa-solid fa-cloud-arrow-up"
-            style="font-size: 45px; color: #0d6efd; margin-bottom: 15px;">
-        </i>
-
-        <p id="upload-text"
-            style="font-size: 16px; font-weight: 500;">
-            Drag & Drop or Click to Upload Excel File
+        <p style="color: #6c757d;">
+            Convert Excel spreadsheets (.xlsx, .xls) into clean, professional PDF documents instantly.
         </p>
 
-        <input type="file"
-            id="excel-file"
-            accept=".xlsx, .xls" />
+        <div class="upload-zone">
+
+            <i class="fa-solid fa-cloud-arrow-up"
+                style="font-size: 45px; color: #0d6efd; margin-bottom: 15px;">
+            </i>
+
+            <p id="upload-text"
+                style="font-size: 16px; font-weight: 500;">
+                Drag & Drop or Click to Upload Excel File
+            </p>
+
+            <input type="file"
+                id="excel-file"
+                accept=".xlsx,.xls,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+
+        </div>
+
+        <div id="file-name"
+            style="margin-bottom: 20px; font-weight: 600; color: #198754; font-size: 14px;">
+        </div>
+
+        <button class="action-btn" id="convert-btn">
+            Convert & Download PDF
+        </button>
+
+        <div id="status"></div>
+
+        <a href="index.html" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Home
+        </a>
 
     </div>
 
-    <div id="file-name"
-        style="margin-bottom: 20px; font-weight: 600; color: #198754; font-size: 14px;">
+
+    <!-- Background Area for HTML to PDF Rendering -->
+
+    <div id="hidden-pdf-render">
+        <table id="target-excel-table" class="pro-table"></table>
     </div>
 
-    <button class="action-btn" id="convert-btn">
-        Convert & Download PDF
-    </button>
 
-    <div id="status"></div>
+    <script>
 
-    <a href="index.html" class="back-link">
-        <i class="fa-solid fa-arrow-left"></i>
-        Back to Home
-    </a>
+        let outputFileName = "converted-document.pdf";
+        let selectedFile = null;
 
-</div>
+        const fileInput =
+            document.getElementById("excel-file");
 
-<!-- Background Area for HTML to PDF Rendering -->
-<div id="hidden-pdf-render">
-    <table id="target-excel-table" class="pro-table"></table>
-</div>
+        const fileNameBox =
+            document.getElementById("file-name");
 
+        const convertBtn =
+            document.getElementById("convert-btn");
 
-<script>
+        const statusBox =
+            document.getElementById("status");
 
-    let outputFileName = "converted-document.pdf";
-    let selectedFile = null;
+        const table =
+            document.getElementById("target-excel-table");
 
 
-    /* =========================
-       FILE SELECTION
-    ========================= */
+        /* ==========================================
+           EXCEL FILE SELECT
+        ========================================== */
 
-    document.getElementById('excel-file').addEventListener('change', function(e) {
+        fileInput.addEventListener("change", function(e) {
 
-        const file = e.target.files[0];
+            const file = e.target.files[0];
 
-        if (!file) {
-            return;
-        }
+            if (!file) {
+                return;
+            }
 
-        const extension = file.name.split('.').pop().toLowerCase();
+            selectedFile = file;
 
-        if (extension !== 'xlsx' && extension !== 'xls') {
-
-            document.getElementById('file-name').innerText =
-                "❌ Please select a valid Excel file.";
-
-            document.getElementById('file-name').style.color =
-                "#dc3545";
-
-            document.getElementById('convert-btn').style.display =
-                'none';
-
-            selectedFile = null;
-
-            return;
-        }
+            outputFileName =
+                file.name.replace(/\.[^/.]+$/, "") + ".pdf";
 
 
-        selectedFile = file;
+            fileNameBox.innerHTML =
+                '<i class="fa-solid fa-check-circle"></i> Selected: ' +
+                file.name;
 
-        outputFileName =
-            file.name.replace(/\.[^/.]+$/, "") + ".pdf";
+            fileNameBox.style.color = "#198754";
 
-
-        document.getElementById('file-name').innerHTML =
-            '<i class="fa-solid fa-check-circle"></i> Selected: ' +
-            file.name;
-
-        document.getElementById('file-name').style.color =
-            "#198754";
+            convertBtn.style.display = "block";
 
 
-        document.getElementById('convert-btn').style.display =
-            'block';
+            statusBox.innerText =
+                "Reading Excel file...";
 
-        document.getElementById('status').innerText =
-            "Reading Excel file...";
-
-        document.getElementById('status').style.color =
-            "#0d6efd";
+            statusBox.style.color =
+                "#0d6efd";
 
 
-        /* =========================
-           READ EXCEL FILE
-        ========================= */
+            /* Check XLSX library */
 
-        const reader = new FileReader();
+            if (typeof XLSX === "undefined") {
 
-        reader.onload = function(event) {
+                statusBox.innerText =
+                    "❌ Excel library failed to load. Please refresh the page.";
 
-            try {
+                statusBox.style.color =
+                    "#dc3545";
 
-                if (typeof XLSX === "undefined") {
-                    throw new Error(
-                        "Excel library could not be loaded."
+                console.error(
+                    "XLSX library is not loaded."
+                );
+
+                return;
+            }
+
+
+            /* ==========================================
+               READ EXCEL FILE
+            ========================================== */
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload = function(event) {
+
+                try {
+
+                    const data =
+                        new Uint8Array(
+                            event.target.result
+                        );
+
+
+                    console.log(
+                        "Excel file size:",
+                        data.length
                     );
-                }
 
 
-                const data =
-                    new Uint8Array(event.target.result);
+                    /* Read XLS and XLSX */
+
+                    const workbook =
+                        XLSX.read(data, {
+                            type: "array",
+                            cellDates: true
+                        });
 
 
-                const workbook =
-                    XLSX.read(data, {
-                        type: 'array'
+                    console.log(
+                        "Excel sheets:",
+                        workbook.SheetNames
+                    );
+
+
+                    if (
+                        !workbook.SheetNames ||
+                        workbook.SheetNames.length === 0
+                    ) {
+
+                        throw new Error(
+                            "No worksheet found."
+                        );
+                    }
+
+
+                    const firstSheetName =
+                        workbook.SheetNames[0];
+
+
+                    const worksheet =
+                        workbook.Sheets[
+                            firstSheetName
+                        ];
+
+
+                    if (!worksheet) {
+
+                        throw new Error(
+                            "Worksheet could not be opened."
+                        );
+                    }
+
+
+                    /* Convert Excel to array */
+
+                    const json =
+                        XLSX.utils.sheet_to_json(
+                            worksheet,
+                            {
+                                header: 1,
+                                defval: "",
+                                raw: false
+                            }
+                        );
+
+
+                    if (
+                        !json ||
+                        json.length === 0
+                    ) {
+
+                        throw new Error(
+                            "Excel sheet is empty."
+                        );
+                    }
+
+
+                    /* Clear previous table */
+
+                    table.innerHTML = "";
+
+
+                    /* Find maximum number of columns */
+
+                    let maxColumns = 0;
+
+                    json.forEach(function(row) {
+
+                        if (
+                            Array.isArray(row) &&
+                            row.length > maxColumns
+                        ) {
+                            maxColumns =
+                                row.length;
+                        }
+
                     });
 
 
-                if (!workbook.SheetNames ||
-                    workbook.SheetNames.length === 0) {
+                    if (maxColumns === 0) {
 
-                    throw new Error(
-                        "No worksheet found."
+                        throw new Error(
+                            "No data found in Excel sheet."
+                        );
+                    }
+
+
+                    /* ==========================================
+                       CREATE PDF TABLE
+                    ========================================== */
+
+                    json.forEach(function(row, rowIndex) {
+
+                        const tr =
+                            document.createElement("tr");
+
+
+                        for (
+                            let column = 0;
+                            column < maxColumns;
+                            column++
+                        ) {
+
+                            let cellValue = "";
+
+
+                            if (
+                                Array.isArray(row) &&
+                                row[column] !== undefined &&
+                                row[column] !== null
+                            ) {
+
+                                cellValue =
+                                    String(
+                                        row[column]
+                                    );
+
+                            }
+
+
+                            const cellElement =
+                                rowIndex === 0
+                                    ? document.createElement("th")
+                                    : document.createElement("td");
+
+
+                            cellElement.textContent =
+                                cellValue;
+
+
+                            tr.appendChild(
+                                cellElement
+                            );
+
+                        }
+
+
+                        table.appendChild(tr);
+
+                    });
+
+
+                    statusBox.innerText =
+                        "✅ Excel file ready. Click Convert & Download PDF.";
+
+                    statusBox.style.color =
+                        "#198754";
+
+
+                    console.log(
+                        "Excel successfully loaded."
                     );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "EXCEL READ ERROR:",
+                        error
+                    );
+
+
+                    statusBox.innerText =
+                        "❌ Could not read Excel file.";
+
+                    statusBox.style.color =
+                        "#dc3545";
+
                 }
 
-
-                const firstSheetName =
-                    workbook.SheetNames[0];
+            };
 
 
-                const sheet =
-                    workbook.Sheets[firstSheetName];
+            reader.onerror = function() {
+
+                statusBox.innerText =
+                    "❌ Browser could not read this file.";
+
+                statusBox.style.color =
+                    "#dc3545";
+
+            };
 
 
-                const json =
-                    XLSX.utils.sheet_to_json(
-                        sheet,
-                        {
-                            header: 1,
-                            defval: ""
-                        }
-                    );
+            reader.readAsArrayBuffer(file);
+
+        });
 
 
-                const table =
-                    document.getElementById(
-                        'target-excel-table'
-                    );
+        /* ==========================================
+           CONVERT EXCEL TO PDF
+        ========================================== */
 
+        convertBtn.addEventListener(
+            "click",
+            function() {
 
-                table.innerHTML = "";
+                if (!selectedFile) {
 
+                    statusBox.innerText =
+                        "❌ Please select an Excel file first.";
 
-                if (!json || json.length === 0) {
-
-                    document.getElementById('status').innerText =
-                        "❌ Excel file is empty.";
-
-                    document.getElementById('status').style.color =
+                    statusBox.style.color =
                         "#dc3545";
 
                     return;
                 }
 
 
-                /* =========================
-                   CREATE HTML TABLE
-                ========================= */
+                if (!table.rows.length) {
 
-                json.forEach(function(row, rowIndex) {
+                    statusBox.innerText =
+                        "❌ Excel data is not available.";
 
-                    const tr =
-                        document.createElement('tr');
+                    statusBox.style.color =
+                        "#dc3545";
 
-
-                    row.forEach(function(cell) {
-
-                        const cellElement =
-                            rowIndex === 0
-                                ? document.createElement('th')
-                                : document.createElement('td');
+                    return;
+                }
 
 
-                        cellElement.innerText =
-                            cell !== undefined &&
-                            cell !== null
-                                ? String(cell)
-                                : "";
+                if (
+                    typeof html2pdf === "undefined"
+                ) {
+
+                    statusBox.innerText =
+                        "❌ PDF library failed to load.";
+
+                    statusBox.style.color =
+                        "#dc3545";
+
+                    return;
+                }
 
 
-                        tr.appendChild(cellElement);
+                statusBox.innerText =
+                    "Converting... Please wait.";
+
+                statusBox.style.color =
+                    "#0d6efd";
+
+
+                /* ==========================================
+                   PDF SETTINGS
+                ========================================== */
+
+                const conversionOptions = {
+
+                    margin: 20,
+
+                    filename:
+                        outputFileName,
+
+                    image: {
+                        type: "jpeg",
+                        quality: 1
+                    },
+
+                    html2canvas: {
+
+                        scale: 2,
+
+                        useCORS: true,
+
+                        logging: false,
+
+                        backgroundColor:
+                            "#ffffff"
+
+                    },
+
+                    jsPDF: {
+
+                        unit: "pt",
+
+                        format: "a4",
+
+                        orientation:
+                            "landscape"
+
+                    },
+
+                    pagebreak: {
+
+                        mode: [
+                            "css",
+                            "legacy"
+                        ]
+
+                    }
+
+                };
+
+
+                /* ==========================================
+                   GENERATE PDF
+                ========================================== */
+
+                html2pdf()
+
+                    .set(
+                        conversionOptions
+                    )
+
+                    .from(table)
+
+                    .save()
+
+                    .then(function() {
+
+                        statusBox.innerText =
+                            "🎉 PDF Downloaded Successfully!";
+
+                        statusBox.style.color =
+                            "#28a745";
+
+                    })
+
+                    .catch(function(error) {
+
+                        console.error(
+                            "PDF CONVERSION ERROR:",
+                            error
+                        );
+
+                        statusBox.innerText =
+                            "❌ PDF conversion failed.";
+
+                        statusBox.style.color =
+                            "#dc3545";
 
                     });
 
-
-                    table.appendChild(tr);
-
-                });
-
-
-                document.getElementById('status').innerText =
-                    "Excel file ready. Click Convert & Download PDF.";
-
-                document.getElementById('status').style.color =
-                    "#198754";
-
-
-            } catch (error) {
-
-                console.error(
-                    "Excel Reading Error:",
-                    error
-                );
-
-
-                document.getElementById('status').innerText =
-                    "❌ Could not read Excel file.";
-
-                document.getElementById('status').style.color =
-                    "#dc3545";
-
             }
+        );
 
-        };
+    </script>
 
-
-        reader.onerror = function() {
-
-            document.getElementById('status').innerText =
-                "❌ Could not read the selected file.";
-
-            document.getElementById('status').style.color =
-                "#dc3545";
-
-        };
-
-
-        reader.readAsArrayBuffer(file);
-
-    });
-
-
-
-    /* =========================
-       CONVERT EXCEL → PDF
-    ========================= */
-
-    document.getElementById('convert-btn').addEventListener(
-        'click',
-        function() {
-
-            const tableSource =
-                document.getElementById(
-                    'target-excel-table'
-                );
-
-
-            if (!selectedFile) {
-
-                document.getElementById('status').innerText =
-                    "❌ Please select an Excel file first.";
-
-                document.getElementById('status').style.color =
-                    "#dc3545";
-
-                return;
-            }
-
-
-            if (!tableSource.rows.length) {
-
-                document.getElementById('status').innerText =
-                    "❌ Empty or invalid Excel data.";
-
-                document.getElementById('status').style.color =
-                    "#dc3545";
-
-                return;
-            }
-
-
-            if (typeof html2pdf === "undefined") {
-
-                document.getElementById('status').innerText =
-                    "❌ PDF library failed to load. Check internet connection.";
-
-                document.getElementById('status').style.color =
-                    "#dc3545";
-
-                return;
-            }
-
-
-            document.getElementById('status').innerText =
-                "Converting... Please wait.";
-
-            document.getElementById('status').style.color =
-                "#0d6efd";
-
-
-            /* =========================
-               PDF SETTINGS
-            ========================= */
-
-            const conversionOptions = {
-
-                margin: 20,
-
-                filename: outputFileName,
-
-                image: {
-                    type: 'jpeg',
-                    quality: 1.0
-                },
-
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false,
-                    backgroundColor: '#ffffff'
-                },
-
-                jsPDF: {
-                    unit: 'pt',
-                    format: 'a4',
-                    orientation: 'portrait'
-                },
-
-                pagebreak: {
-                    mode: [
-                        'avoid-all',
-                        'css',
-                        'legacy'
-                    ]
-                }
-
-            };
-
-
-            /* =========================
-               GENERATE PDF
-            ========================= */
-
-            html2pdf()
-                .set(conversionOptions)
-                .from(tableSource)
-                .save()
-                .then(function() {
-
-                    document.getElementById('status').innerText =
-                        "🎉 PDF Downloaded Successfully!";
-
-                    document.getElementById('status').style.color =
-                        "#28a745";
-
-                })
-                .catch(function(err) {
-
-                    console.error(
-                        "PDF Conversion Error:",
-                        err
-                    );
-
-                    document.getElementById('status').innerText =
-                        "❌ Conversion failed. Please try again.";
-
-                    document.getElementById('status').style.color =
-                        "#dc3545";
-
-                });
-
-        }
-    );
-
-</script>
-
-</body> </html>
+</body>
+</html>
 
 
