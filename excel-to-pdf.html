@@ -13,11 +13,20 @@
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-    <!-- Excel Reader -->
+    <!-- Excel Library -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-    <!-- HTML to PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- jsPDF fallback -->
+    <script>
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+            document.write(
+                '<script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"><\/script>'
+            );
+        }
+    </script>
 
     <style>
         .converter-box { 
@@ -94,7 +103,7 @@
             color: #212529;
         }
 
-        /* Background Dynamic PDF Table Design */
+        /* PDF Table */
         #hidden-pdf-render {
             position: absolute;
             left: -9999px;
@@ -159,9 +168,11 @@
                 Drag & Drop or Click to Upload Excel File
             </p>
 
-            <input type="file"
+            <input
+                type="file"
                 id="excel-file"
-                accept=".xlsx,.xls,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                accept=".xlsx,.xls,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            />
 
         </div>
 
@@ -183,7 +194,7 @@
     </div>
 
 
-    <!-- Background Area for HTML to PDF Rendering -->
+    <!-- Hidden Excel Table -->
 
     <div id="hidden-pdf-render">
         <table id="target-excel-table" class="pro-table"></table>
@@ -211,17 +222,15 @@
             document.getElementById("target-excel-table");
 
 
-        /* ==========================================
-           EXCEL FILE SELECT
-        ========================================== */
+        /* =========================================
+           SELECT EXCEL
+        ========================================= */
 
         fileInput.addEventListener("change", function(e) {
 
             const file = e.target.files[0];
 
-            if (!file) {
-                return;
-            }
+            if (!file) return;
 
             selectedFile = file;
 
@@ -238,34 +247,24 @@
             convertBtn.style.display = "block";
 
 
+            if (typeof XLSX === "undefined") {
+
+                statusBox.innerText =
+                    "❌ Excel library failed to load.";
+
+                statusBox.style.color =
+                    "#dc3545";
+
+                return;
+            }
+
+
             statusBox.innerText =
                 "Reading Excel file...";
 
             statusBox.style.color =
                 "#0d6efd";
 
-
-            /* Check XLSX library */
-
-            if (typeof XLSX === "undefined") {
-
-                statusBox.innerText =
-                    "❌ Excel library failed to load. Please refresh the page.";
-
-                statusBox.style.color =
-                    "#dc3545";
-
-                console.error(
-                    "XLSX library is not loaded."
-                );
-
-                return;
-            }
-
-
-            /* ==========================================
-               READ EXCEL FILE
-            ========================================== */
 
             const reader =
                 new FileReader();
@@ -281,14 +280,6 @@
                         );
 
 
-                    console.log(
-                        "Excel file size:",
-                        data.length
-                    );
-
-
-                    /* Read XLS and XLSX */
-
                     const workbook =
                         XLSX.read(data, {
                             type: "array",
@@ -296,42 +287,23 @@
                         });
 
 
-                    console.log(
-                        "Excel sheets:",
-                        workbook.SheetNames
-                    );
-
-
                     if (
                         !workbook.SheetNames ||
                         workbook.SheetNames.length === 0
                     ) {
-
                         throw new Error(
                             "No worksheet found."
                         );
                     }
 
 
-                    const firstSheetName =
+                    const sheetName =
                         workbook.SheetNames[0];
 
 
                     const worksheet =
-                        workbook.Sheets[
-                            firstSheetName
-                        ];
+                        workbook.Sheets[sheetName];
 
-
-                    if (!worksheet) {
-
-                        throw new Error(
-                            "Worksheet could not be opened."
-                        );
-                    }
-
-
-                    /* Convert Excel to array */
 
                     const json =
                         XLSX.utils.sheet_to_json(
@@ -348,21 +320,17 @@
                         !json ||
                         json.length === 0
                     ) {
-
                         throw new Error(
                             "Excel sheet is empty."
                         );
                     }
 
 
-                    /* Clear previous table */
-
                     table.innerHTML = "";
 
 
-                    /* Find maximum number of columns */
-
                     let maxColumns = 0;
+
 
                     json.forEach(function(row) {
 
@@ -377,18 +345,6 @@
                     });
 
 
-                    if (maxColumns === 0) {
-
-                        throw new Error(
-                            "No data found in Excel sheet."
-                        );
-                    }
-
-
-                    /* ==========================================
-                       CREATE PDF TABLE
-                    ========================================== */
-
                     json.forEach(function(row, rowIndex) {
 
                         const tr =
@@ -396,41 +352,27 @@
 
 
                         for (
-                            let column = 0;
-                            column < maxColumns;
-                            column++
+                            let i = 0;
+                            i < maxColumns;
+                            i++
                         ) {
 
-                            let cellValue = "";
+                            const value =
+                                row[i] === undefined ||
+                                row[i] === null
+                                    ? ""
+                                    : String(row[i]);
 
 
-                            if (
-                                Array.isArray(row) &&
-                                row[column] !== undefined &&
-                                row[column] !== null
-                            ) {
-
-                                cellValue =
-                                    String(
-                                        row[column]
-                                    );
-
-                            }
-
-
-                            const cellElement =
+                            const cell =
                                 rowIndex === 0
                                     ? document.createElement("th")
                                     : document.createElement("td");
 
 
-                            cellElement.textContent =
-                                cellValue;
+                            cell.textContent = value;
 
-
-                            tr.appendChild(
-                                cellElement
-                            );
+                            tr.appendChild(cell);
 
                         }
 
@@ -446,26 +388,19 @@
                     statusBox.style.color =
                         "#198754";
 
-
-                    console.log(
-                        "Excel successfully loaded."
-                    );
-
                 }
                 catch (error) {
 
                     console.error(
-                        "EXCEL READ ERROR:",
+                        "Excel Error:",
                         error
                     );
-
 
                     statusBox.innerText =
                         "❌ Could not read Excel file.";
 
                     statusBox.style.color =
                         "#dc3545";
-
                 }
 
             };
@@ -474,7 +409,7 @@
             reader.onerror = function() {
 
                 statusBox.innerText =
-                    "❌ Browser could not read this file.";
+                    "❌ Could not read Excel file.";
 
                 statusBox.style.color =
                     "#dc3545";
@@ -487,156 +422,393 @@
         });
 
 
-        /* ==========================================
-           CONVERT EXCEL TO PDF
-        ========================================== */
+        /* =========================================
+           EXCEL → PDF
+        ========================================= */
 
-        convertBtn.addEventListener(
-            "click",
-            function() {
+        convertBtn.addEventListener("click", function() {
 
-                if (!selectedFile) {
-
-                    statusBox.innerText =
-                        "❌ Please select an Excel file first.";
-
-                    statusBox.style.color =
-                        "#dc3545";
-
-                    return;
-                }
-
-
-                if (!table.rows.length) {
-
-                    statusBox.innerText =
-                        "❌ Excel data is not available.";
-
-                    statusBox.style.color =
-                        "#dc3545";
-
-                    return;
-                }
-
-
-                if (
-                    typeof html2pdf === "undefined"
-                ) {
-
-                    statusBox.innerText =
-                        "❌ PDF library failed to load.";
-
-                    statusBox.style.color =
-                        "#dc3545";
-
-                    return;
-                }
-
+            if (!selectedFile) {
 
                 statusBox.innerText =
-                    "Converting... Please wait.";
+                    "❌ Please select an Excel file first.";
 
                 statusBox.style.color =
-                    "#0d6efd";
+                    "#dc3545";
+
+                return;
+            }
 
 
-                /* ==========================================
-                   PDF SETTINGS
-                ========================================== */
+            if (!table.rows.length) {
 
-                const conversionOptions = {
+                statusBox.innerText =
+                    "❌ Excel data is not available.";
 
-                    margin: 20,
+                statusBox.style.color =
+                    "#dc3545";
 
-                    filename:
-                        outputFileName,
+                return;
+            }
 
-                    image: {
-                        type: "jpeg",
-                        quality: 1
-                    },
 
-                    html2canvas: {
+            /* Check jsPDF */
 
-                        scale: 2,
+            if (
+                !window.jspdf ||
+                !window.jspdf.jsPDF
+            ) {
 
-                        useCORS: true,
+                statusBox.innerText =
+                    "❌ PDF library failed to load. Please refresh the page.";
 
-                        logging: false,
+                statusBox.style.color =
+                    "#dc3545";
 
-                        backgroundColor:
-                            "#ffffff"
+                console.error(
+                    "jsPDF library not loaded."
+                );
 
-                    },
+                return;
+            }
 
-                    jsPDF: {
 
+            statusBox.innerText =
+                "Converting... Please wait.";
+
+            statusBox.style.color =
+                "#0d6efd";
+
+
+            try {
+
+                const { jsPDF } =
+                    window.jspdf;
+
+
+                /* =================================
+                   CREATE PDF
+                ================================= */
+
+                const doc =
+                    new jsPDF({
+                        orientation: "landscape",
                         unit: "pt",
+                        format: "a4"
+                    });
 
-                        format: "a4",
 
-                        orientation:
-                            "landscape"
+                const pageWidth =
+                    doc.internal.pageSize.getWidth();
 
-                    },
+                const pageHeight =
+                    doc.internal.pageSize.getHeight();
 
-                    pagebreak: {
 
-                        mode: [
-                            "css",
-                            "legacy"
-                        ]
+                const margin = 25;
+
+                const usableWidth =
+                    pageWidth - (margin * 2);
+
+
+                const rows =
+                    table.rows;
+
+
+                const columnCount =
+                    rows[0].cells.length;
+
+
+                /* =================================
+                   FIND COLUMN WIDTHS
+                ================================= */
+
+                let columnWidths =
+                    new Array(columnCount).fill(0);
+
+
+                for (
+                    let c = 0;
+                    c < columnCount;
+                    c++
+                ) {
+
+                    let maxLength = 5;
+
+
+                    for (
+                        let r = 0;
+                        r < rows.length;
+                        r++
+                    ) {
+
+                        const text =
+                            rows[r]
+                                .cells[c]
+                                .innerText
+                                .trim();
+
+
+                        if (
+                            text.length > maxLength
+                        ) {
+
+                            maxLength =
+                                text.length;
+                        }
 
                     }
 
-                };
 
-
-                /* ==========================================
-                   GENERATE PDF
-                ========================================== */
-
-                html2pdf()
-
-                    .set(
-                        conversionOptions
-                    )
-
-                    .from(table)
-
-                    .save()
-
-                    .then(function() {
-
-                        statusBox.innerText =
-                            "🎉 PDF Downloaded Successfully!";
-
-                        statusBox.style.color =
-                            "#28a745";
-
-                    })
-
-                    .catch(function(error) {
-
-                        console.error(
-                            "PDF CONVERSION ERROR:",
-                            error
+                    columnWidths[c] =
+                        Math.min(
+                            maxLength * 4.5 + 15,
+                            140
                         );
 
-                        statusBox.innerText =
-                            "❌ PDF conversion failed.";
+                }
 
-                        statusBox.style.color =
-                            "#dc3545";
 
-                    });
+                /* Scale columns to page */
 
-            }
-        );
+                let totalWidth =
+                    columnWidths.reduce(
+                        (a, b) => a + b,
+                        0
+                    );
 
-    </script>
 
-</body>
-</html>
+                if (
+                    totalWidth >
+                    usableWidth
+                ) {
+
+                    const scale =
+                        usableWidth /
+                        totalWidth;
+
+
+                    columnWidths =
+                        columnWidths.map(
+                            width =>
+                                width * scale
+                        );
+
+                }
+
+
+                /* =================================
+                   DRAW TABLE
+                ================================= */
+
+                let y = margin;
+
+                const baseRowHeight = 22;
+
+
+                doc.setFont(
+                    "helvetica",
+                    "normal"
+                );
+
+
+                for (
+                    let r = 0;
+                    r < rows.length;
+                    r++
+                ) {
+
+                    const row =
+                        rows[r];
+
+
+                    let x =
+                        margin;
+
+
+                    /* Calculate row height */
+
+                    let maxLines = 1;
+
+
+                    for (
+                        let c = 0;
+                        c < columnCount;
+                        c++
+                    ) {
+
+                        const text =
+                            row.cells[c]
+                                .innerText
+                                .trim();
+
+
+                        const lines =
+                            doc.splitTextToSize(
+                                text,
+                                Math.max(
+                                    columnWidths[c] - 8,
+                                    20
+                                )
+                            );
+
+
+                        if (
+                            lines.length >
+                            maxLines
+                        ) {
+
+                            maxLines =
+                                lines.length;
+                        }
+
+                    }
+
+
+                    const rowHeight =
+                        Math.max(
+                            baseRowHeight,
+                            maxLines * 12 + 10
+                        );
+
+
+                    /* New page */
+
+                    if (
+                        y + rowHeight >
+                        pageHeight - margin
+                    ) {
+
+                        doc.addPage();
+
+                        y = margin;
+
+                    }
+
+
+                    /* Draw cells */
+
+                    for (
+                        let c = 0;
+                        c < columnCount;
+                        c++
+                    ) {
+
+                        const cell =
+                            row.cells[c];
+
+
+                        const text =
+                            cell.innerText
+                                .trim();
+
+
+                        const width =
+                            columnWidths[c];
+
+
+                        /* Header */
+
+                        if (r === 0) {
+
+                            doc.setFillColor(
+                                13,
+                                110,
+                                253
+                            );
+
+                            doc.setTextColor(
+                                255,
+                                255,
+                                255
+                            );
+
+                            doc.setFont(
+                                "helvetica",
+                                "bold"
+                            );
+
+                        }
+
+                        /* Alternate rows */
+
+                        else {
+
+                            if (r % 2 === 0) {
+
+                                doc.setFillColor(
+                                    248,
+                                    249,
+                                    250
+                                );
+
+                                doc.setTextColor(
+                                    51,
+                                    51,
+                                    51
+                                );
+
+                            }
+                            else {
+
+                                doc.setFillColor(
+                                    255,
+                                    255,
+                                    255
+                                );
+
+                                doc.setTextColor(
+                                    51,
+                                    51,
+                                    51
+                                );
+
+                            }
+
+                            doc.setFont(
+                                "helvetica",
+                                "normal"
+                            );
+
+                        }
+
+
+                        /* Cell background */
+
+                        doc.rect(
+                            x,
+                            y,
+                            width,
+                            rowHeight,
+                            "F"
+                        );
+
+
+                        /* Cell border */
+
+                        doc.setDrawColor(
+                            222,
+                            226,
+                            230
+                        );
+
+
+                        doc.rect(
+                            x,
+                            y,
+                            width,
+                            rowHeight
+                        );
+
+
+                        /* Text */
+
+                        const lines =
+                            doc.splitTextToSize(
+                                text,
+                                Math.max(
+                                    width - 8,
+                                    20
+                         
 
 
