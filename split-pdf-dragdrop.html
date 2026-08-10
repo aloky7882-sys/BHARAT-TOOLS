@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Split PDF - Bharat Tools</title>
+
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+if (!window.PDFLib) {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"><\/script>');
+}
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6fb;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.container{
+background:#fff;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 20px rgba(0,0,0,.1);
+width:100%;
+max-width:700px;
+text-align:center;
+}
+
+h1{
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+margin:15px 0;
+padding:10px;
+}
+
+.upload-zone{
+position:relative;
+border:2px dashed #0d6efd;
+border-radius:12px;
+padding:32px 20px;
+margin:20px 0;
+background:#f8f9fa;
+cursor:pointer;
+transition:all .2s ease;
+overflow:hidden;
+}
+
+.upload-zone:hover,
+.upload-zone.dragover{
+background:#eef5ff;
+border-color:#0b5ed7;
+}
+
+.upload-zone input{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+opacity:0;
+cursor:pointer;
+margin:0;
+padding:0;
+}
+
+.upload-icon{
+width:76px;
+height:76px;
+margin:0 auto 14px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#e7f0ff;
+color:#0d6efd;
+font-size:34px;
+}
+
+.upload-title{
+font-size:18px;
+font-weight:700;
+color:#212529;
+margin-bottom:6px;
+}
+
+.upload-subtitle{
+font-size:14px;
+color:#6c757d;
+margin-bottom:10px;
+}
+
+.upload-formats{
+display:inline-block;
+padding:5px 10px;
+border-radius:20px;
+background:#fff;
+border:1px solid #dee2e6;
+color:#6c757d;
+font-size:12px;
+font-weight:600;
+}
+
+#file-name{
+margin-top:10px;
+font-weight:600;
+color:#198754;
+font-size:14px;
+word-break:break-word;
+}
+
+#page-info{
+margin-top:8px;
+font-size:14px;
+color:#6c757d;
+}
+
+.page-input-wrap{
+text-align:left;
+margin-top:18px;
+}
+
+.page-input-wrap label{
+display:block;
+font-size:14px;
+font-weight:600;
+color:#495057;
+margin-bottom:6px;
+}
+
+#page{
+margin:0;
+}
+
+#status{
+margin-top:15px;
+font-weight:600;
+font-size:14px;
+}
+
+button{
+padding:15px 25px;
+background:#0d6efd;
+color:#fff;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:18px;
+margin-top:20px;
+}
+
+button:hover{
+background:#084298;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>
+<i class="fa-solid fa-scissors" style="color:#0d6efd;"></i>
+Split PDF
+</h1>
+
+<div class="upload-zone" id="dropZone">
+    <div class="upload-icon">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+    </div>
+
+    <div class="upload-title">
+        Drag & Drop your PDF here
+    </div>
+
+    <div class="upload-subtitle">
+        or click to choose a PDF file
+    </div>
+
+    <div class="upload-formats">
+        PDF
+    </div>
+
+    <input type="file" id="upload" accept=".pdf,application/pdf">
+</div>
+
+<div id="file-name"></div>
+<div id="page-info"></div>
+
+<div class="page-input-wrap">
+    <label for="page">Page number to extract</label>
+    <input type="number" id="page" placeholder="Enter Page Number" min="1">
+</div>
+
+<button id="splitBtn">
+<i class="fa-solid fa-scissors"></i>
+Split & Download
+</button>
+
+<div id="status"></div>
+
+</div>
+
+<script>
+
+const upload = document.getElementById("upload");
+const dropZone = document.getElementById("dropZone");
+const pageInput = document.getElementById("page");
+const splitBtn = document.getElementById("splitBtn");
+const fileName = document.getElementById("file-name");
+const pageInfo = document.getElementById("page-info");
+const status = document.getElementById("status");
+
+let selectedFile = null;
+let totalPages = 0;
+
+function setStatus(message, color){
+    status.innerText = message;
+    status.style.color = color;
+}
+
+async function loadPDF(file){
+
+    if(!file) return;
+
+    if(
+        file.type !== "application/pdf" &&
+        !file.name.toLowerCase().endsWith(".pdf")
+    ){
+        selectedFile = null;
+        totalPages = 0;
+        fileName.innerText = "";
+        pageInfo.innerText = "";
+        setStatus("❌ Please select a PDF file.", "#dc3545");
+        return;
+    }
+
+    selectedFile = file;
+
+    fileName.innerHTML =
+        '<i class="fa-solid fa-circle-check"></i> Selected: ' +
+        file.name;
+
+    fileName.style.color = "#198754";
+
+    setStatus("Reading PDF...", "#0d6efd");
+
+    try{
+
+        if(!window.PDFLib){
+            throw new Error("PDF library failed to load");
+        }
+
+        const bytes = await file.arrayBuffer();
+
+        const pdf =
+            await PDFLib.PDFDocument.load(bytes);
+
+        totalPages = pdf.getPageCount();
+
+        pageInput.max = totalPages;
+
+        pageInput.value = "";
+
+        pageInfo.innerText =
+            "This PDF contains " +
+            totalPages +
+            " page" +
+            (totalPages === 1 ? "" : "s") +
+            ".";
+
+        setStatus(
+            "✅ PDF ready. Enter the page number you want to extract.",
+            "#198754"
+        );
+
+    }catch(error){
+
+        console.error("PDF loading error:", error);
+
+        selectedFile = null;
+        totalPages = 0;
+
+        setStatus(
+            "❌ Could not read this PDF file.",
+            "#dc3545"
+        );
+    }
+}
+
+upload.addEventListener("change", function(){
+    loadPDF(this.files[0]);
+});
+
+dropZone.addEventListener("dragover", function(e){
+    e.preventDefault();
+    dropZone.classList.add("dragover");
+});
+
+dropZone.addEventListener("dragleave", function(){
+    dropZone.classList.remove("dragover");
+});
+
+dropZone.addEventListener("drop", function(e){
+    e.preventDefault();
+    dropZone.classList.remove("dragover");
+    loadPDF(e.dataTransfer.files[0]);
+});
+
+splitBtn.addEventListener("click", async function(){
+
+    if(!selectedFile){
+
+        setStatus(
+            "❌ Please select a PDF first.",
+            "#dc3545"
+        );
+
+        return;
+    }
+
+    const pageNo =
+        parseInt(pageInput.value, 10);
+
+    if(
+        !Number.isInteger(pageNo) ||
+        pageNo < 1 ||
+        pageNo > totalPages
+    ){
+
+        setStatus(
+            "❌ Enter a valid page number between 1 and " +
+            totalPages + ".",
+            "#dc3545"
+        );
+
+        return;
+    }
+
+    if(!window.PDFLib){
+
+        setStatus(
+            "❌ PDF library failed to load. Please refresh the page.",
+            "#dc3545"
+        );
+
+        return;
+    }
+
+    splitBtn.disabled = true;
+
+    setStatus(
+        "Splitting PDF... Please wait.",
+        "#0d6efd"
+    );
+
+    try{
+
+        const bytes =
+            await selectedFile.arrayBuffer();
+
+        const pdf =
+            await PDFLib.PDFDocument.load(bytes);
+
+        const newPdf =
+            await PDFLib.PDFDocument.create();
+
+        const copiedPages =
+            await newPdf.copyPages(
+                pdf,
+                [pageNo - 1]
+            );
+
+        newPdf.addPage(copiedPages[0]);
+
+        const pdfBytes =
+            await newPdf.save();
+
+        const blob =
+            new Blob(
+                [pdfBytes],
+                {type:"application/pdf"}
+            );
+
+        const url =
+            URL.createObjectURL(blob);
+
+        const link =
+            document.createElement("a");
+
+        link.href = url;
+
+        const baseName =
+            selectedFile.name
+                .replace(/\.pdf$/i, "");
+
+        link.download =
+            baseName +
+            "-page-" +
+            pageNo +
+            ".pdf";
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.remove();
+
+        setTimeout(function(){
+            URL.revokeObjectURL(url);
+        },1000);
+
+        setStatus(
+            "🎉 Page " +
+            pageNo +
+            " downloaded successfully!",
+            "#28a745"
+        );
+
+    }catch(error){
+
+        console.error("PDF split error:", error);
+
+        setStatus(
+            "❌ Split failed. Please check that the PDF is valid and not password protected.",
+            "#dc3545"
+        );
+
+    }finally{
+
+        splitBtn.disabled = false;
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
