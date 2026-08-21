@@ -827,7 +827,8 @@
                             );
 
                         const textY =
-                            y + (rowHeight - (lines.length * 12)) / 2 + 9;
+                            y + (rowHeight / 2) -
+                            ((lines.length - 1) * 5) / 2 + 4;
 
                         doc.text(
                             lines,
@@ -879,9 +880,8 @@
                 openBtn.type = "button";
                 openBtn.innerText = "📄 Open PDF";
                 openBtn.className = "action-btn";
-                openBtn.style.display = "block";
                 openBtn.style.background = "#198754";
-                openBtn.style.marginTop = "10px";
+                openBtn.style.display = "block";
 
                 openBtn.onclick = function () {
                     window.open(url, "_blank");
@@ -906,4 +906,3 @@
 
 </body>
 </html>
-

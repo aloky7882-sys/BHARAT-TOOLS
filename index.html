@@ -10,10 +10,64 @@
 
     <title>BHARAT TOOLS - Free Image, PDF & Calculator Tools</title>
 
-    <meta name="description" content="BHARAT TOOLS offers free online Image Tools, PDF Tools, Calculators, QR Generator, Password Generator and many more useful utilities.">
+    <meta name="description" content="BHARAT TOOLS offers free online Image Tools, PDF Tools, Calculators, QR Generator, Password Generator and many more useful utilities. No signup, no watermark, 100% free.">
     <meta name="keywords" content="bharat tools,image compressor,pdf tools,calculator,image resizer,free online tools,qr code,password generator">
     <meta name="author" content="Alok">
     <meta name="theme-color" content="#0d6efd">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://aloky7882-sys.github.io/BHARAT-TOOLS/">
+
+    <!-- Open Graph / Social sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="BHARAT TOOLS - Free Image, PDF & Calculator Tools">
+    <meta property="og:description" content="Free online Image Tools, PDF Tools, Calculators, QR Generator and Password Generator. No signup, no watermark, 100% free.">
+    <meta property="og:url" content="https://aloky7882-sys.github.io/BHARAT-TOOLS/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="BHARAT TOOLS - Free Image, PDF & Calculator Tools">
+    <meta name="twitter:description" content="Free online Image Tools, PDF Tools, Calculators, QR Generator and Password Generator. No signup, no watermark, 100% free.">
+
+    <!-- Structured data for Google -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Bharat Tools",
+        "url": "https://aloky7882-sys.github.io/BHARAT-TOOLS/",
+        "description": "Free online Image, PDF and Calculator tools. No signup, no watermark, 100% free."
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Is Bharat Tools free to use?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, every tool on Bharat Tools is completely free to use. There is no signup, no hidden charges and no watermark added to your files."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Are my files uploaded to a server?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. All conversions and calculations run directly inside your browser using JavaScript. Your images, PDFs and Excel files are never uploaded or stored on any server."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Do I need to install any software to use Bharat Tools?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No installation is required. Bharat Tools works entirely in your web browser on desktop, laptop and mobile devices."
+                }
+            }
+        ]
+    }
+    </script>
 
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -236,6 +290,55 @@
         </div>
     </section>
 
+    <!--================ ABOUT / SEO CONTENT SECTION ================-->
+    <!-- Plain text content, no new classes used, so it inherits existing body/paragraph styling and won't change your layout or colours. -->
+    <section id="about" style="max-width:900px;margin:0 auto;padding:40px 20px;">
+        <h2>About Bharat Tools</h2>
+        <p>
+            Bharat Tools is a free collection of everyday online utilities built for students,
+            professionals and small business owners across India. Instead of downloading heavy
+            software or signing up for paid subscriptions, you can compress an image, convert a
+            file to PDF, generate a QR code or calculate your loan EMI directly inside your web
+            browser — on a laptop, desktop or mobile phone.
+        </p>
+        <p>
+            Every tool on this website runs entirely on the client side, meaning your files are
+            processed on your own device using JavaScript and are never uploaded to a server.
+            This keeps your personal photos, documents and spreadsheets private while still
+            giving you fast, watermark-free results.
+        </p>
+
+        <h2>How to Use Bharat Tools</h2>
+        <p>
+            Using any tool on Bharat Tools is simple: open the tool you need from the Image
+            Tools, PDF Tools or Calculators section above, upload or drag-and-drop your file into
+            the box, and click the action button. Your converted file or result downloads
+            automatically — there is no waiting, no email verification and no account required.
+        </p>
+
+        <h2>Why Choose Bharat Tools</h2>
+        <p>
+            Unlike many online converters that limit free usage, add watermarks, or require a
+            paid plan for basic features, Bharat Tools keeps every tool completely free with no
+            daily limits. The interface is designed to be lightweight and mobile-friendly, so the
+            tools load quickly even on slower internet connections common across India.
+        </p>
+
+        <h2>Frequently Asked Questions</h2>
+        <details style="margin-bottom:12px;">
+            <summary style="cursor:pointer;font-weight:600;">Is Bharat Tools free to use?</summary>
+            <p>Yes, every tool on Bharat Tools is completely free to use. There is no signup, no hidden charges and no watermark added to your files.</p>
+        </details>
+        <details style="margin-bottom:12px;">
+            <summary style="cursor:pointer;font-weight:600;">Are my files uploaded to a server?</summary>
+            <p>No. All conversions and calculations run directly inside your browser using JavaScript. Your images, PDFs and Excel files are never uploaded or stored on any server.</p>
+        </details>
+        <details style="margin-bottom:12px;">
+            <summary style="cursor:pointer;font-weight:600;">Do I need to install any software to use Bharat Tools?</summary>
+            <p>No installation is required. Bharat Tools works entirely in your web browser on desktop, laptop and mobile devices.</p>
+        </details>
+    </section>
+
     <!--================ FOOTER ================-->
     <footer id="contact">
         <div class="footer-content">
@@ -244,41 +347,8 @@
         </div>
     </footer>
 
-    <!--================ NAV + SEARCH SCRIPT ================-->
-    <script>
-        // Mobile hamburger menu toggle
-        const menuBtn = document.querySelector(".menu-btn");
-        const menu = document.querySelector(".menu");
-
-        if (menuBtn && menu) {
-            menuBtn.addEventListener("click", function () {
-                menu.classList.toggle("active");
-            });
-
-            // close menu after a link is tapped (mobile)
-            menu.querySelectorAll("a").forEach(function (link) {
-                link.addEventListener("click", function () {
-                    menu.classList.remove("active");
-                });
-            });
-        }
-
-        // Live search: filters tool cards by title
-        const searchInput = document.getElementById("search");
-
-        if (searchInput) {
-            searchInput.addEventListener("input", function () {
-                const query = searchInput.value.trim().toLowerCase();
-                const cards = document.querySelectorAll(".card");
-
-                cards.forEach(function (card) {
-                    const title = card.querySelector("h2");
-                    const text = title ? title.textContent.toLowerCase() : "";
-                    card.style.display = text.includes(query) ? "" : "none";
-                });
-            });
-        }
-    </script>
+    <!--================ MAIN SCRIPT (menu, search, animations) ================-->
+    <script src="script.js"></script>
 
 </body>
-</html>>
+</html>
