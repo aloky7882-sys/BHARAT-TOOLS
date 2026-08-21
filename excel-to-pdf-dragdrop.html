@@ -823,6 +823,87 @@
                                 Math.max(
                                     width - 8,
                                     20
-                         
+                                )
+                            );
 
+                        const textY =
+                            y + (rowHeight - (lines.length * 12)) / 2 + 9;
+
+                        doc.text(
+                            lines,
+                            x + 4,
+                            textY
+                        );
+
+                        x += width;
+
+                    }
+
+                    y += rowHeight;
+
+                }
+
+                /* =================================
+                   SAVE / DOWNLOAD PDF
+                ================================= */
+
+                const blob = doc.output("blob");
+
+                if (!blob || blob.size < 100) {
+                    throw new Error("PDF could not be created.");
+                }
+
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+
+                link.href = url;
+                link.download = outputFileName;
+                link.style.display = "none";
+
+                document.body.appendChild(link);
+                link.click();
+
+                setTimeout(function () {
+                    link.remove();
+                }, 1000);
+
+                statusBox.innerText =
+                    "🎉 PDF created successfully! If download did not start, tap Open PDF.";
+                statusBox.style.color = "#28a745";
+
+                const oldOpen = document.getElementById("openPdfBtn");
+                if (oldOpen) oldOpen.remove();
+
+                const openBtn = document.createElement("button");
+                openBtn.id = "openPdfBtn";
+                openBtn.type = "button";
+                openBtn.innerText = "📄 Open PDF";
+                openBtn.className = "action-btn";
+                openBtn.style.display = "block";
+                openBtn.style.background = "#198754";
+                openBtn.style.marginTop = "10px";
+
+                openBtn.onclick = function () {
+                    window.open(url, "_blank");
+                };
+
+                statusBox.insertAdjacentElement("afterend", openBtn);
+
+            } catch (error) {
+
+                console.error("PDF creation error:", error);
+
+                statusBox.innerText =
+                    "❌ PDF conversion failed: " + error.message;
+
+                statusBox.style.color = "#dc3545";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
 

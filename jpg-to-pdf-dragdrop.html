@@ -289,164 +289,149 @@ dropZone.addEventListener("drop", function(e){
 download.addEventListener("click", function(){
 
     if(!selectedFile || !imageData){
-        status.innerText =
-            "❌ Please select a JPG image first.";
+        status.innerText = "❌ Please select a JPG image first.";
         status.style.color = "#dc3545";
         return;
     }
-
-
-    /* Check jsPDF */
-
-    if(
-        !window.jspdf ||
-        !window.jspdf.jsPDF
-    ){
-        status.innerText =
-            "❌ PDF library failed to load. Please refresh the page.";
-        status.style.color = "#dc3545";
-        console.error("jsPDF library not loaded.");
-        return;
-    }
-
 
     status.innerText = "Converting... Please wait.";
     status.style.color = "#0d6efd";
+    download.disabled = true;
 
-    try{
+    function createPDF(){
 
-        const { jsPDF } = window.jspdf;
+        try{
+            const { jsPDF } = window.jspdf;
+            const img = new Image();
 
-        const img = new Image();
+            img.onload = function(){
 
-        img.onload = function(){
+                try{
+                    const pageWidth = 210;
+                    const pageHeight = 297;
+                    const margin = 10;
 
-            try{
+                    const maxWidth = pageWidth - margin * 2;
+                    const maxHeight = pageHeight - margin * 2;
 
-                /*
-                 * A4 page:
-                 * 210 x 297 mm
-                 */
+                    let imgWidth = maxWidth;
+                    let imgHeight = (img.height * imgWidth) / img.width;
 
-                const pageWidth = 210;
-                const pageHeight = 297;
+                    if(imgHeight > maxHeight){
+                        imgHeight = maxHeight;
+                        imgWidth = (img.width * imgHeight) / img.height;
+                    }
 
-                const margin = 10;
+                    const x = (pageWidth - imgWidth) / 2;
+                    const y = (pageHeight - imgHeight) / 2;
 
-                const maxWidth =
-                    pageWidth - (margin * 2);
+                    const pdf = new jsPDF({
+                        orientation: "portrait",
+                        unit: "mm",
+                        format: "a4",
+                        compress: true
+                    });
 
-                const maxHeight =
-                    pageHeight - (margin * 2);
+                    pdf.addImage(
+                        imageData,
+                        "JPEG",
+                        x,
+                        y,
+                        imgWidth,
+                        imgHeight,
+                        undefined,
+                        "FAST"
+                    );
 
+                    const fileName =
+                        selectedFile.name.replace(/\.(jpg|jpeg)$/i, "") + ".pdf";
 
-                /* Keep original aspect ratio */
+                    const blob = pdf.output("blob");
 
-                let imgWidth = maxWidth;
+                    if(!blob || blob.size < 100){
+                        throw new Error("PDF could not be created.");
+                    }
 
-                let imgHeight =
-                    (img.height * imgWidth) / img.width;
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
 
+                    link.href = url;
+                    link.download = fileName;
+                    link.style.display = "none";
 
-                /* If height is too large, fit by height */
+                    document.body.appendChild(link);
+                    link.click();
 
-                if(imgHeight > maxHeight){
+                    setTimeout(function(){
+                        link.remove();
+                    }, 1000);
 
-                    imgHeight = maxHeight;
+                    status.innerText = "🎉 PDF created successfully! If download did not start, tap Open PDF.";
+                    status.style.color = "#28a745";
 
-                    imgWidth =
-                        (img.width * imgHeight) /
-                        img.height;
+                    const oldOpen = document.getElementById("openPdfBtn");
+                    if(oldOpen) oldOpen.remove();
+
+                    const openBtn = document.createElement("button");
+                    openBtn.id = "openPdfBtn";
+                    openBtn.type = "button";
+                    openBtn.innerText = "📄 Open PDF";
+                    openBtn.style.marginTop = "10px";
+                    openBtn.style.background = "#198754";
+
+                    openBtn.onclick = function(){
+                        window.open(url, "_blank");
+                    };
+
+                    status.insertAdjacentElement("afterend", openBtn);
+
+                    download.disabled = false;
+
+                }catch(error){
+                    console.error("PDF creation error:", error);
+                    status.innerText = "❌ PDF conversion failed: " + error.message;
+                    status.style.color = "#dc3545";
+                    download.disabled = false;
                 }
+            };
 
+            img.onerror = function(){
+                status.innerText = "❌ Could not process the JPG image.";
+                status.style.color = "#dc3545";
+                download.disabled = false;
+            };
 
-                /* Center image */
+            img.src = imageData;
 
-                const x =
-                    (pageWidth - imgWidth) / 2;
-
-                const y =
-                    (pageHeight - imgHeight) / 2;
-
-
-                const pdf = new jsPDF({
-                    orientation: "portrait",
-                    unit: "mm",
-                    format: "a4",
-                    compress: true
-                });
-
-
-                pdf.addImage(
-                    imageData,
-                    imageType,
-                    x,
-                    y,
-                    imgWidth,
-                    imgHeight,
-                    undefined,
-                    "FAST"
-                );
-
-
-                const fileName =
-                    selectedFile.name
-                        .replace(/\.(jpg|jpeg)$/i, "")
-                        + ".pdf";
-
-
-                pdf.save(fileName);
-
-
-                status.innerText =
-                    "🎉 PDF Downloaded Successfully!";
-
-                status.style.color =
-                    "#28a745";
-
-            }
-            catch(error){
-
-                console.error(
-                    "PDF creation error:",
-                    error
-                );
-
-                status.innerText =
-                    "❌ PDF conversion failed.";
-
-                status.style.color =
-                    "#dc3545";
-            }
-
-        };
-
-
-        img.onerror = function(){
-
-            status.innerText =
-                "❌ Could not process the JPG image.";
-
-            status.style.color =
-                "#dc3545";
-        };
-
-
-        img.src = imageData;
-
+        }catch(error){
+            console.error("jsPDF error:", error);
+            status.innerText = "❌ PDF conversion failed: " + error.message;
+            status.style.color = "#dc3545";
+            download.disabled = false;
+        }
     }
-    catch(error){
 
-        console.error(
-            "jsPDF error:",
-            error
-        );
+    if(window.jspdf && window.jspdf.jsPDF){
+        createPDF();
+    }else{
+        status.innerText = "Loading PDF engine...";
+        let tries = 0;
 
-        status.innerText =
-            "❌ PDF conversion failed.";
+        const wait = setInterval(function(){
+            tries++;
 
-        status.style.color =
-            "#dc3545";
+            if(window.jspdf && window.jspdf.jsPDF){
+                clearInterval(wait);
+                createPDF();
+            }
+
+            if(tries >= 40){
+                clearInterval(wait);
+                status.innerText = "❌ PDF library failed to load. Please refresh.";
+                status.style.color = "#dc3545";
+                download.disabled = false;
+            }
+        }, 250);
     }
 
 });
