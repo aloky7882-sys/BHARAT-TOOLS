@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Image Cropper - Bharat Tools</title>
 
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
 <style>
 
 *{
@@ -15,7 +18,7 @@ font-family:Arial,sans-serif;
 }
 
 body{
-background:#f5f5f5;
+background:#f4f6fb;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -28,19 +31,123 @@ background:#fff;
 padding:30px;
 border-radius:15px;
 box-shadow:0 5px 20px rgba(0,0,0,.1);
-max-width:700px;
 width:100%;
+max-width:700px;
+text-align:center;
 }
 
 h1{
-text-align:center;
 margin-bottom:20px;
 }
 
-input{
+.upload-zone{
+position:relative;
+border:2px dashed #0d6efd;
+border-radius:12px;
+padding:32px 20px;
+margin:20px 0;
+background:#f8f9fa;
+cursor:pointer;
+transition:all .2s ease;
+overflow:hidden;
+}
+
+.upload-zone:hover,
+.upload-zone.dragover{
+background:#eef5ff;
+border-color:#0b5ed7;
+transform:translateY(-1px);
+}
+
+.upload-zone input{
+position:absolute;
+inset:0;
 width:100%;
-margin:10px 0;
-padding:10px;
+height:100%;
+opacity:0;
+cursor:pointer;
+margin:0;
+}
+
+.upload-icon{
+width:76px;
+height:76px;
+margin:0 auto 14px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#e7f0ff;
+color:#0d6efd;
+font-size:34px;
+transition:transform .2s ease;
+}
+
+.upload-zone:hover .upload-icon{
+transform:translateY(-3px);
+}
+
+.upload-title{
+font-size:18px;
+font-weight:700;
+color:#212529;
+margin-bottom:6px;
+}
+
+.upload-subtitle{
+font-size:14px;
+color:#6c757d;
+margin-bottom:10px;
+}
+
+.upload-formats{
+display:inline-block;
+padding:5px 10px;
+border-radius:20px;
+background:#fff;
+border:1px solid #dee2e6;
+color:#6c757d;
+font-size:12px;
+font-weight:600;
+}
+
+.crop-fields{
+display:none;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:10px;
+text-align:left;
+}
+
+.crop-fields label{
+font-size:13px;
+color:#6c757d;
+font-weight:600;
+margin-bottom:4px;
+display:block;
+}
+
+.crop-fields input{
+width:100%;
+padding:12px;
+font-size:16px;
+border:1px solid #dee2e6;
+border-radius:8px;
+}
+
+.original-preview{
+max-width:100%;
+max-height:200px;
+display:none;
+margin-top:15px;
+border-radius:10px;
+}
+
+canvas{
+width:100%;
+margin-top:20px;
+border-radius:10px;
+display:none;
 }
 
 button{
@@ -51,14 +158,18 @@ background:#0d6efd;
 color:#fff;
 border:none;
 border-radius:8px;
-font-size:16px;
+font-size:18px;
 cursor:pointer;
 }
 
-canvas{
-width:100%;
-margin-top:20px;
-border:1px solid #ddd;
+button:hover{
+background:#0b5ed7;
+}
+
+#status{
+margin-top:15px;
+font-size:15px;
+font-weight:600;
 }
 
 </style>
@@ -69,77 +180,172 @@ border:1px solid #ddd;
 
 <div class="container">
 
-<h1>✂️ Image Cropper</h1>
+<h1>
+<i class="fa-solid fa-crop" style="color:#0d6efd;"></i>
+Image Cropper
+</h1>
 
-<input type="file" id="upload" accept="image/*">
+<div class="upload-zone" id="dropZone">
+    <div class="upload-icon">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+    </div>
 
-<input type="number" id="x" placeholder="Start X">
+    <div class="upload-title">
+        Drag & Drop your image here
+    </div>
 
-<input type="number" id="y" placeholder="Start Y">
+    <div class="upload-subtitle">
+        or click to choose an image
+    </div>
 
-<input type="number" id="w" placeholder="Crop Width">
+    <div class="upload-formats">
+        JPG / PNG / WEBP
+    </div>
 
-<input type="number" id="h" placeholder="Crop Height">
+    <input type="file" id="upload" accept="image/*">
+</div>
 
-<button onclick="cropImage()">Crop Image</button>
+<img id="originalPreview" class="original-preview" alt="Original">
+
+<div class="crop-fields" id="cropFields">
+    <div>
+        <label>Start X</label>
+        <input type="number" id="x" value="0">
+    </div>
+    <div>
+        <label>Start Y</label>
+        <input type="number" id="y" value="0">
+    </div>
+    <div>
+        <label>Crop Width</label>
+        <input type="number" id="w">
+    </div>
+    <div>
+        <label>Crop Height</label>
+        <input type="number" id="h">
+    </div>
+</div>
+
+<button id="cropBtn" style="display:none;">Crop Image</button>
 
 <canvas id="canvas"></canvas>
 
-<button id="download" style="display:none;">Download</button>
+<button id="download" style="display:none;background:#198754;">Download</button>
+
+<div id="status"></div>
 
 </div>
 
 <script>
 
-let image=new Image();
+const upload = document.getElementById("upload");
+const dropZone = document.getElementById("dropZone");
+const originalPreview = document.getElementById("originalPreview");
+const cropFields = document.getElementById("cropFields");
+const cropBtn = document.getElementById("cropBtn");
+const canvas = document.getElementById("canvas");
+const download = document.getElementById("download");
+const status = document.getElementById("status");
 
-document.getElementById("upload").onchange=function(e){
+let image = new Image();
 
-const file=e.target.files[0];
+function processFile(file){
 
-const reader=new FileReader();
+    if(!file || !file.type.startsWith("image/")){
+        status.innerText = "❌ Please select an image file.";
+        status.style.color = "#dc3545";
+        return;
+    }
 
-reader.onload=function(event){
+    status.innerText = "Reading image...";
+    status.style.color = "#0d6efd";
 
-image.src=event.target.result;
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        image = new Image();
+
+        image.onload = function(){
+            originalPreview.src = image.src;
+            originalPreview.style.display = "block";
+
+            document.getElementById("w").value = image.width;
+            document.getElementById("h").value = image.height;
+
+            cropFields.style.display = "grid";
+            cropBtn.style.display = "block";
+
+            status.innerText = "✅ Image loaded. Set crop area and click Crop Image.";
+            status.style.color = "#198754";
+        };
+
+        image.src = e.target.result;
+
+    };
+
+    reader.onerror = function(){
+        status.innerText = "❌ Could not read the image.";
+        status.style.color = "#dc3545";
+    };
+
+    reader.readAsDataURL(file);
 
 }
 
-reader.readAsDataURL(file);
+upload.addEventListener("change", function(){
+    processFile(this.files[0]);
+});
 
-}
+dropZone.addEventListener("dragover", function(e){
+    e.preventDefault();
+    dropZone.classList.add("dragover");
+});
 
-function cropImage(){
+dropZone.addEventListener("dragleave", function(){
+    dropZone.classList.remove("dragover");
+});
 
-const canvas=document.getElementById("canvas");
+dropZone.addEventListener("drop", function(e){
+    e.preventDefault();
+    dropZone.classList.remove("dragover");
+    processFile(e.dataTransfer.files[0]);
+});
 
-const ctx=canvas.getContext("2d");
+cropBtn.addEventListener("click", function(){
 
-const x=parseInt(document.getElementById("x").value);
-const y=parseInt(document.getElementById("y").value);
-const w=parseInt(document.getElementById("w").value);
-const h=parseInt(document.getElementById("h").value);
+    const x = parseInt(document.getElementById("x").value) || 0;
+    const y = parseInt(document.getElementById("y").value) || 0;
+    const w = parseInt(document.getElementById("w").value);
+    const h = parseInt(document.getElementById("h").value);
 
-canvas.width=w;
-canvas.height=h;
+    if(!w || !h || w <= 0 || h <= 0){
+        status.innerText = "❌ Please enter a valid crop width and height.";
+        status.style.color = "#dc3545";
+        return;
+    }
 
-ctx.drawImage(image,x,y,w,h,0,0,w,h);
+    const ctx = canvas.getContext("2d");
 
-document.getElementById("download").style.display="block";
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.display = "block";
 
-document.getElementById("download").onclick=function(){
+    ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
 
-const a=document.createElement("a");
+    download.style.display = "block";
 
-a.href=canvas.toDataURL();
+    download.onclick = function(){
+        const a = document.createElement("a");
+        a.href = canvas.toDataURL();
+        a.download = "cropped-image.png";
+        a.click();
+    };
 
-a.download="cropped-image.png";
+    status.innerText = "🎉 Cropped! Click Download.";
+    status.style.color = "#198754";
 
-a.click();
-
-}
-
-}
+});
 
 </script>
 

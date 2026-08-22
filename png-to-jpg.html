@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PNG to JPG Converter - Bharat Tools</title>
 
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
 <style>
 
 *{
@@ -30,20 +33,88 @@ border-radius:15px;
 box-shadow:0 5px 20px rgba(0,0,0,.1);
 width:100%;
 max-width:700px;
+text-align:center;
 }
 
 h1{
-text-align:center;
 margin-bottom:20px;
 }
 
-input{
-width:100%;
-margin:15px 0;
+.upload-zone{
+position:relative;
+border:2px dashed #0d6efd;
+border-radius:12px;
+padding:32px 20px;
+margin:20px 0;
+background:#f8f9fa;
+cursor:pointer;
+transition:all .2s ease;
+overflow:hidden;
 }
 
-img{
+.upload-zone:hover,
+.upload-zone.dragover{
+background:#eef5ff;
+border-color:#0b5ed7;
+transform:translateY(-1px);
+}
+
+.upload-zone input{
+position:absolute;
+inset:0;
 width:100%;
+height:100%;
+opacity:0;
+cursor:pointer;
+margin:0;
+}
+
+.upload-icon{
+width:76px;
+height:76px;
+margin:0 auto 14px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#e7f0ff;
+color:#0d6efd;
+font-size:34px;
+transition:transform .2s ease;
+}
+
+.upload-zone:hover .upload-icon{
+transform:translateY(-3px);
+}
+
+.upload-title{
+font-size:18px;
+font-weight:700;
+color:#212529;
+margin-bottom:6px;
+}
+
+.upload-subtitle{
+font-size:14px;
+color:#6c757d;
+margin-bottom:10px;
+}
+
+.upload-formats{
+display:inline-block;
+padding:5px 10px;
+border-radius:20px;
+background:#fff;
+border:1px solid #dee2e6;
+color:#6c757d;
+font-size:12px;
+font-weight:600;
+}
+
+img.preview{
+width:100%;
+max-height:400px;
+object-fit:contain;
 display:none;
 margin-top:20px;
 border-radius:10px;
@@ -52,13 +123,23 @@ border-radius:10px;
 button{
 width:100%;
 padding:15px;
-margin-top:15px;
 background:#0d6efd;
 color:#fff;
 border:none;
 border-radius:8px;
+font-size:18px;
 cursor:pointer;
-font-size:16px;
+margin-top:20px;
+}
+
+button:hover{
+background:#0b5ed7;
+}
+
+#status{
+margin-top:15px;
+font-size:15px;
+font-weight:600;
 }
 
 </style>
@@ -69,76 +150,139 @@ font-size:16px;
 
 <div class="container">
 
-<h1>🖼 PNG to JPG Converter</h1>
+<h1>
+<i class="fa-solid fa-file-image" style="color:#0d6efd;"></i>
+PNG to JPG Converter
+</h1>
 
-<input type="file" id="upload" accept=".png,image/png">
+<div class="upload-zone" id="dropZone">
+    <div class="upload-icon">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+    </div>
 
-<img id="preview">
+    <div class="upload-title">
+        Drag & Drop your PNG here
+    </div>
+
+    <div class="upload-subtitle">
+        or click to choose an image
+    </div>
+
+    <div class="upload-formats">
+        PNG
+    </div>
+
+    <input type="file" id="upload" accept=".png,image/png">
+</div>
+
+<img id="preview" class="preview" alt="Preview">
 
 <button id="download" style="display:none;">Download JPG</button>
+
+<div id="status"></div>
 
 </div>
 
 <script>
 
-const upload=document.getElementById("upload");
-const preview=document.getElementById("preview");
-const download=document.getElementById("download");
+const upload = document.getElementById("upload");
+const preview = document.getElementById("preview");
+const download = document.getElementById("download");
+const status = document.getElementById("status");
+const dropZone = document.getElementById("dropZone");
 
-let jpgData="";
+let jpgData = "";
 
-upload.onchange=function(){
+function processFile(file){
 
-const file=this.files[0];
+    if(!file) return;
 
-if(!file) return;
+    if(
+        file.type !== "image/png" &&
+        !file.name.toLowerCase().endsWith(".png")
+    ){
+        status.innerText = "❌ Please select a PNG image.";
+        status.style.color = "#dc3545";
+        return;
+    }
 
-const reader=new FileReader();
+    status.innerText = "Converting...";
+    status.style.color = "#0d6efd";
 
-reader.onload=function(e){
+    const reader = new FileReader();
 
-const img=new Image();
+    reader.onload = function(e){
 
-img.onload=function(){
+        const img = new Image();
 
-const canvas=document.createElement("canvas");
-const ctx=canvas.getContext("2d");
+        img.onload = function(){
 
-canvas.width=img.width;
-canvas.height=img.height;
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
 
-ctx.fillStyle="#ffffff";
-ctx.fillRect(0,0,canvas.width,canvas.height);
+            canvas.width = img.width;
+            canvas.height = img.height;
 
-ctx.drawImage(img,0,0);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-jpgData=canvas.toDataURL("image/jpeg",0.95);
+            ctx.drawImage(img, 0, 0);
 
-preview.src=jpgData;
-preview.style.display="block";
+            jpgData = canvas.toDataURL("image/jpeg", 0.95);
 
-download.style.display="block";
+            preview.src = jpgData;
+            preview.style.display = "block";
+            download.style.display = "block";
+
+            status.innerText = "✅ Ready! Click Download JPG.";
+            status.style.color = "#198754";
+
+        };
+
+        img.onerror = function(){
+            status.innerText = "❌ Could not process the image.";
+            status.style.color = "#dc3545";
+        };
+
+        img.src = e.target.result;
+
+    };
+
+    reader.onerror = function(){
+        status.innerText = "❌ Could not read the image.";
+        status.style.color = "#dc3545";
+    };
+
+    reader.readAsDataURL(file);
 
 }
 
-img.src=e.target.result;
+upload.addEventListener("change", function(){
+    processFile(this.files[0]);
+});
 
-}
+dropZone.addEventListener("dragover", function(e){
+    e.preventDefault();
+    dropZone.classList.add("dragover");
+});
 
-reader.readAsDataURL(file);
+dropZone.addEventListener("dragleave", function(){
+    dropZone.classList.remove("dragover");
+});
 
-}
+dropZone.addEventListener("drop", function(e){
+    e.preventDefault();
+    dropZone.classList.remove("dragover");
+    processFile(e.dataTransfer.files[0]);
+});
 
-download.onclick=function(){
-
-const a=document.createElement("a");
-
-a.href=jpgData;
-a.download="converted-image.jpg";
-
-a.click();
-
-}
+download.addEventListener("click", function(){
+    if(!jpgData) return;
+    const a = document.createElement("a");
+    a.href = jpgData;
+    a.download = "converted-image.jpg";
+    a.click();
+});
 
 </script>
 

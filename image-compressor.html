@@ -1,163 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Image Compressor - Bharat Tools</title>
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
+<title>Image Compressor | BHARAT TOOLS</title>
 
-body{
-background:#f4f6fb;
-display:flex;
-justify-content:center;
-align-items:center;
-min-height:100vh;
-padding:20px;
-}
-
-.container{
-width:100%;
-max-width:700px;
-background:#fff;
-padding:30px;
-border-radius:15px;
-box-shadow:0 10px 30px rgba(0,0,0,.1);
-}
-
-h1{
-text-align:center;
-margin-bottom:20px;
-}
-
-input[type=file]{
-width:100%;
-margin:20px 0;
-}
-
-img{
-width:100%;
-display:none;
-margin-top:20px;
-border-radius:10px;
-}
-
-.info{
-margin-top:20px;
-line-height:35px;
-}
-
-button{
-margin-top:20px;
-background:#0d6efd;
-color:white;
-border:none;
-padding:15px 30px;
-border-radius:8px;
-cursor:pointer;
-font-size:16px;
-display:none;
-}
-
-button:hover{
-background:#084298;
-}
-</style>
+<link rel="stylesheet" href="image-compressor.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 </head>
+
 <body>
 
-<div class="container">
+<header>
 
-<h1>🖼 Image Compressor</h1>
+<div class="logo">
 
-<input type="file" id="upload" accept="image/*">
-
-<img id="preview">
-
-<div class="info">
-<p>Original Size : <span id="original">0 KB</span></p>
-<p>Compressed Size : <span id="compressed">0 KB</span></p>
-</div>
-
-<button id="download">Download Compressed Image</button>
+⚡ BHARAT TOOLS
 
 </div>
 
-<script>
+</header>
 
-const upload=document.getElementById("upload");
-const preview=document.getElementById("preview");
-const original=document.getElementById("original");
-const compressed=document.getElementById("compressed");
-const download=document.getElementById("download");
+<main>
 
-let compressedImage="";
+<section class="hero">
 
-upload.addEventListener("change",function(){
+<h1>
 
-const file=this.files[0];
+Compress Images Online
 
-if(!file) return;
+</h1>
 
-original.innerHTML=(file.size/1024).toFixed(2)+" KB";
+<p>
 
-const reader=new FileReader();
+Reduce JPG, PNG & WEBP image size without losing quality.
 
-reader.onload=function(e){
+</p>
 
-const img=new Image();
+</section>
 
-img.onload=function(){
+<section class="upload-box">
 
-const canvas=document.createElement("canvas");
-const ctx=canvas.getContext("2d");
+<div class="drop-area" id="drop-area">
 
-canvas.width=img.width;
-canvas.height=img.height;
+<div class="upload-icon">
+<i class="fa-solid fa-cloud-arrow-up"></i>
+</div>
 
-ctx.drawImage(img,0,0);
+<h2>
 
-compressedImage=canvas.toDataURL("image/jpeg",0.5);
+Drag & Drop Images Here
 
-preview.src=compressedImage;
-preview.style.display="block";
+</h2>
 
-const size=Math.round((compressedImage.length*3)/4/1024);
+<p>
 
-compressed.innerHTML=size+" KB";
+or click to choose images (multiple allowed)
 
-download.style.display="inline-block";
+</p>
 
-}
+<div class="upload-formats">
 
-img.src=e.target.result;
+JPG / PNG / WEBP
 
-}
+</div>
 
-reader.readAsDataURL(file);
+<br>
 
-});
+<input type="file"
 
-download.addEventListener("click",function(){
+id="fileElem"
 
-const a=document.createElement("a");
+multiple
 
-a.href=compressedImage;
+accept="image/*"
 
-a.download="compressed-image.jpg";
+hidden>
 
-a.click();
+<button id="selectBtn">
 
-});
+Select Images
 
-</script>
+</button>
+
+</div>
+
+</section>
+
+<div id="status"></div>
+
+<section id="previewArea">
+
+</section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+
+<script src="image-compressor.js"></script>
 
 </body>
+
 </html>
