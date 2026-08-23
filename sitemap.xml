@@ -1,88 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://sitemaps.org">
-    <!-- Main Home Page -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
     <url>
-        <loc>https://github.io</loc>
-        <lastmod>2026-08-04</lastmod>
+        <loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/</loc>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
+
     <!-- Image Tools -->
-    <url>
-        <loc>https://github.ioimage-compressor.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://github.ioimage-resizer.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://github.ioimage-cropper.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://github.iojpg-to-png.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://github.iopng-to-jpg.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/image-compressor.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/image-resizer.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/image-cropper.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/jpg-to-png.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/png-to-jpg.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
     <!-- PDF Tools -->
-    <url>
-        <loc>https://github.iojpg-to-pdf.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://github.iopdf-to-jpg.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://github.iomerge-pdf.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://github.iosplit-pdf.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/jpg-to-pdf-dragdrop.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/pdf-to-jpg-dragdrop.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/excel-to-pdf-dragdrop.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/merge-pdf-dragdrop.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/split-pdf-dragdrop.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/word-to-pdf.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+    <!-- Design & Developer Tools -->
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/css-gradient-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/qr-code-logo.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/text-diff-checker.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/unit-converter.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/json-formatter.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/color-palette-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/favicon-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/base64-tool.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/meme-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
     <!-- Utility Tools -->
-    <url>
-        <loc>https://github.ioqr-generator.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://github.iopassword-generator.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://github.ioword-counter.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://github.ioage-calculator.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://github.ioemi-calculator.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://github.ioscientific-calculator.html</loc>
-        <lastmod>2026-08-04</lastmod>
-        <priority>0.8</priority>
-    </url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/qr-generator.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/password-generator.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/word-counter.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/age-calculator.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/emi-calculator.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/scientific-calculator.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+    <!-- Info Pages -->
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/about.html</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/contact.html</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/privacy-policy.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/terms.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+    <url><loc>https://aloky7882-sys.github.io/BHARAT-TOOLS/cookies.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+
 </urlset>

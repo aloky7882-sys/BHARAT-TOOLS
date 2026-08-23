@@ -10,6 +10,11 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+if (!window.QRCode) {
+    document.write('<scr' + 'ipt src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js"><\/scr' + 'ipt>');
+}
+</script>
 
 <style>
 
@@ -394,6 +399,26 @@ function generateQR(){
         return;
     }
 
+    if(typeof QRCode === "undefined" || !QRCode.toCanvas){
+        status.innerText = "⏳ Loading QR engine, please wait a moment and try again...";
+        status.style.color = "#0d6efd";
+
+        let tries = 0;
+        const wait = setInterval(function(){
+            tries++;
+            if(typeof QRCode !== "undefined" && QRCode.toCanvas){
+                clearInterval(wait);
+                generateQR();
+            } else if(tries >= 30){
+                clearInterval(wait);
+                status.innerText = "❌ Could not load the QR engine. Please check your internet connection and refresh the page.";
+                status.style.color = "#dc3545";
+            }
+        }, 300);
+
+        return;
+    }
+
     const size = parseInt(qrSize.value);
 
     const options = {
@@ -406,39 +431,53 @@ function generateQR(){
         errorCorrectionLevel: logoImage ? "H" : "M"
     };
 
-    QRCode.toCanvas(qrCanvas, text, options, function(err){
+    try{
 
-        if(err){
-            console.error(err);
-            status.innerText = "❌ Could not generate QR code.";
-            status.style.color = "#dc3545";
-            return;
-        }
+        QRCode.toCanvas(qrCanvas, text, options, function(err){
 
-        if(logoImage){
+            if(err){
+                console.error(err);
+                status.innerText = "❌ Could not generate QR code: " + err.message;
+                status.style.color = "#dc3545";
+                return;
+            }
 
-            const ctx = qrCanvas.getContext("2d");
-            const logoSize = size * 0.22;
-            const x = (size - logoSize) / 2;
-            const y = (size - logoSize) / 2;
+            if(logoImage){
 
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(x - 6, y - 6, logoSize + 12, logoSize + 12);
+                const ctx = qrCanvas.getContext("2d");
+                const logoSize = size * 0.22;
+                const x = (size - logoSize) / 2;
+                const y = (size - logoSize) / 2;
 
-            ctx.drawImage(logoImage, x, y, logoSize, logoSize);
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(x - 6, y - 6, logoSize + 12, logoSize + 12);
 
-        }
+                ctx.drawImage(logoImage, x, y, logoSize, logoSize);
 
-        status.innerText = "✅ QR code ready. Test scan it before using widely.";
-        status.style.color = "#198754";
+            }
 
-    });
+            status.innerText = "✅ QR code ready. Test scan it before using widely.";
+            status.style.color = "#198754";
+
+        });
+
+    } catch(e){
+        console.error(e);
+        status.innerText = "❌ Something went wrong: " + e.message;
+        status.style.color = "#dc3545";
+    }
 
 }
 
 generateBtn.addEventListener("click", generateQR);
 
 downloadBtn.addEventListener("click", function(){
+
+    if(!qrCanvas.width || qrCanvas.width === 0){
+        status.innerText = "❌ Generate the QR code first before downloading.";
+        status.style.color = "#dc3545";
+        return;
+    }
 
     const link = document.createElement("a");
     link.download = "qr-code.png";
