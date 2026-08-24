@@ -1,0 +1,26 @@
+<svg viewBox="0 0 340 90" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF9933"/>
+      <stop offset="100%" stop-color="#E24A00"/>
+    </linearGradient>
+    <linearGradient id="sqGreen2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1FA83B"/>
+      <stop offset="100%" stop-color="#0E6E22"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon badge -->
+  <g transform="translate(5,5)">
+    <rect x="0" y="0" width="80" height="80" rx="19" fill="url(#bgGrad2)"/>
+    <rect x="18" y="18" width="17" height="17" rx="4.5" fill="#FFFFFF"/>
+    <rect x="45" y="18" width="17" height="17" rx="4.5" fill="#FFFFFF" opacity="0.62"/>
+    <rect x="18" y="45" width="17" height="17" rx="4.5" fill="#FFFFFF" opacity="0.62"/>
+    <rect x="45" y="45" width="17" height="17" rx="4.5" fill="url(#sqGreen2)"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="100" y="47" font-family="'Segoe UI', Arial, sans-serif" font-size="30" font-weight="800" fill="#1a1a2e">Bharat</text>
+  <text x="188" y="47" font-family="'Segoe UI', Arial, sans-serif" font-size="30" font-weight="800" fill="#E24A00">Tools</text>
+  <text x="100" y="68" font-family="'Segoe UI', Arial, sans-serif" font-size="13" font-weight="500" fill="#555555" letter-spacing="0.5">Free Online Tools for Everyone</text>
+</svg>

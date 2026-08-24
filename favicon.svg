@@ -1,0 +1,24 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF9933"/>
+      <stop offset="100%" stop-color="#E24A00"/>
+    </linearGradient>
+    <linearGradient id="sqGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1FA83B"/>
+      <stop offset="100%" stop-color="#0E6E22"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded square badge -->
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#bgGrad)"/>
+
+  <!-- 2x2 grid of tool squares -->
+  <rect x="15" y="15" width="13" height="13" rx="3.5" fill="#FFFFFF"/>
+  <rect x="36" y="15" width="13" height="13" rx="3.5" fill="#FFFFFF" opacity="0.62"/>
+  <rect x="15" y="36" width="13" height="13" rx="3.5" fill="#FFFFFF" opacity="0.62"/>
+  <rect x="36" y="36" width="13" height="13" rx="3.5" fill="url(#sqGreen)"/>
+
+  <!-- subtle inner border on badge for crispness at small sizes -->
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="none" stroke="#B23600" stroke-width="0.6" opacity="0.4"/>
+</svg>
