@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Voice to Text - Free Online Speech to Text Converter | BHARAT TOOLS</title>
+    <meta name="description" content="Convert your voice to text instantly. Free speech-to-text tool, works in browser, supports Hindi and English, no signup.">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fb;
+            color: #1a2b45;
+        }
+        header {
+            background: linear-gradient(135deg, #2f6fed, #1a4fd6);
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header a.back {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        header .brand {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+        main {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 28px 18px 60px;
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+        .subtitle {
+            text-align: center;
+            color: #5c6b82;
+            font-size: 0.92rem;
+            margin-bottom: 24px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 22px 20px;
+            box-shadow: 0 6px 24px rgba(26, 43, 69, 0.07);
+        }
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #38455c;
+            display: block;
+            margin-bottom: 8px;
+        }
+        select {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1.5px solid #e0e5ee;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            margin-bottom: 18px;
+            background: #fff;
+        }
+        .mic-area {
+            text-align: center;
+            padding: 10px 0 22px;
+        }
+        #mic-btn {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            border: none;
+            background: #2f6fed;
+            color: #fff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, transform 0.15s;
+        }
+        #mic-btn.listening {
+            background: #e0433f;
+            animation: pulse 1.2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(224, 67, 63, 0.4); }
+            70% { box-shadow: 0 0 0 16px rgba(224, 67, 63, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(224, 67, 63, 0); }
+        }
+        #mic-status {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #5c6b82;
+        }
+        #result-text {
+            width: 100%;
+            min-height: 160px;
+            border: 1.5px solid #e0e5ee;
+            border-radius: 10px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .actions button {
+            flex: 1;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 0;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        #copy-btn { background: #eef4ff; color: #1a4fd6; }
+        #clear-btn { background: #fdeceb; color: #c0392b; }
+        .unsupported {
+            display: none;
+            background: #fff4e5;
+            color: #9a6400;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #9aa6b8;
+            font-size: 0.82rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="back">&larr; Back</a>
+        <span class="brand">BHARAT TOOLS</span>
+    </header>
+
+    <main>
+        <h1>🎙️ Voice to Text</h1>
+        <p class="subtitle">Bolo, aur text apne aap ban jaayega. Free, instant.</p>
+
+        <div class="card">
+            <p class="unsupported" id="unsupported-msg">Ye tool sirf Chrome browser me sahi se kaam karta hai. Kripya Chrome me kholein.</p>
+
+            <label for="lang-select">Language</label>
+            <select id="lang-select">
+                <option value="hi-IN">Hindi</option>
+                <option value="en-IN" selected>English (India)</option>
+                <option value="en-US">English (US)</option>
+            </select>
+
+            <div class="mic-area">
+                <button type="button" id="mic-btn">🎤</button>
+                <p id="mic-status">Bolne ke liye mic button dabao</p>
+            </div>
+
+            <label for="result-text">Text</label>
+            <textarea id="result-text" placeholder="Aapka bola hua text yahan aayega..."></textarea>
+
+            <div class="actions">
+                <button type="button" id="copy-btn">Copy Text</button>
+                <button type="button" id="clear-btn">Clear</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 BHARAT TOOLS. All rights reserved.
+    </footer>
+
+    <script>
+        (function () {
+            var micBtn = document.getElementById('mic-btn');
+            var micStatus = document.getElementById('mic-status');
+            var resultText = document.getElementById('result-text');
+            var langSelect = document.getElementById('lang-select');
+            var copyBtn = document.getElementById('copy-btn');
+            var clearBtn = document.getElementById('clear-btn');
+            var unsupportedMsg = document.getElementById('unsupported-msg');
+
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                unsupportedMsg.style.display = 'block';
+                micBtn.disabled = true;
+                micBtn.style.opacity = '0.5';
+                micStatus.textContent = 'Speech recognition supported nahi hai.';
+                return;
+            }
+
+            var recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = langSelect.value;
+
+            var isListening = false;
+            var finalTranscript = resultText.value;
+
+            langSelect.addEventListener('change', function () {
+                recognition.lang = langSelect.value;
+            });
+
+            micBtn.addEventListener('click', function () {
+                if (isListening) {
+                    recognition.stop();
+                } else {
+                    finalTranscript = resultText.value ? resultText.value + ' ' : '';
+                    recognition.lang = langSelect.value;
+                    try {
+                        recognition.start();
+                    } catch (e) {}
+                }
+            });
+
+            recognition.onstart = function () {
+                isListening = true;
+                micBtn.classList.add('listening');
+                micStatus.textContent = 'Sun raha hoon... bolte rahiye';
+            };
+
+            recognition.onend = function () {
+                isListening = false;
+                micBtn.classList.remove('listening');
+                micStatus.textContent = 'Bolne ke liye mic button dabao';
+            };
+
+            recognition.onerror = function (event) {
+                isListening = false;
+                micBtn.classList.remove('listening');
+                if (event.error === 'not-allowed') {
+                    micStatus.textContent = 'Mic ki permission do browser me.';
+                } else {
+                    micStatus.textContent = 'Kuch galat hua, dobara try karo.';
+                }
+            };
+
+            recognition.onresult = function (event) {
+                var interim = '';
+                for (var i = event.resultIndex; i < event.results.length; i++) {
+                    var transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript + ' ';
+                    } else {
+                        interim += transcript;
+                    }
+                }
+                resultText.value = finalTranscript + interim;
+            };
+
+            copyBtn.addEventListener('click', function () {
+                resultText.select();
+                resultText.setSelectionRange(0, 999999);
+                navigator.clipboard.writeText(resultText.value).then(function () {
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(function () { copyBtn.textContent = 'Copy Text'; }, 1500);
+                });
+            });
+
+            clearBtn.addEventListener('click', function () {
+                resultText.value = '';
+                finalTranscript = '';
+            });
+        })();
+    </script>
+
+</body>
+</html>
