@@ -21,7 +21,6 @@
 
     <!-- Open Graph / Social sharing -->
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Bharat Tools">
     <meta property="og:title" content="BHARAT TOOLS - Free Image, PDF & Calculator Tools">
     <meta property="og:description" content="Free online Image Tools, PDF Tools, Calculators, QR Generator and Password Generator. No signup, no watermark, 100% free.">
     <meta property="og:url" content="https://aloky7882-sys.github.io/BHARAT-TOOLS/">
@@ -165,8 +164,18 @@
 
     <!--================ TOOL SECTION START ================-->
     <main class="tool-wrapper">
-        
+
+        <!-- ================= CATEGORY FILTER TABS ================= -->
+        <div id="category-filter-tabs" style="display:flex;gap:8px;overflow-x:auto;padding:4px 0 18px;margin-bottom:10px;">
+            <button type="button" class="filter-tab active" data-filter="all" style="flex-shrink:0;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;padding:8px 18px;border-radius:20px;background:#1a73e8;color:#fff;">All</button>
+            <button type="button" class="filter-tab" data-filter="image" style="flex-shrink:0;border:1px solid #d5d9e0;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;padding:8px 18px;border-radius:20px;background:#fff;color:#4b5563;">🖼 Image</button>
+            <button type="button" class="filter-tab" data-filter="pdf" style="flex-shrink:0;border:1px solid #d5d9e0;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;padding:8px 18px;border-radius:20px;background:#fff;color:#4b5563;">📄 PDF</button>
+            <button type="button" class="filter-tab" data-filter="design" style="flex-shrink:0;border:1px solid #d5d9e0;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;padding:8px 18px;border-radius:20px;background:#fff;color:#4b5563;">🎨 Design</button>
+            <button type="button" class="filter-tab" data-filter="calculator" style="flex-shrink:0;border:1px solid #d5d9e0;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;padding:8px 18px;border-radius:20px;background:#fff;color:#4b5563;">🧰 Utility</button>
+        </div>
+
         <!-- ================= IMAGE TOOLS ================= -->
+        <div class="tool-category" data-category="image">
         <h2 id="image-tools">🖼 Image Tools</h2>
         <div class="container">
             <div class="card">
@@ -200,8 +209,10 @@
                 <a href="png-to-jpg.html" class="tool-btn">Open Tool</a>
             </div>
         </div>
+        </div>
 
         <!-- ================= PDF TOOLS ================= -->
+        <div class="tool-category" data-category="pdf">
         <h2 id="pdf-tools" class="section-title">📄 PDF Tools</h2>
         <div class="container">
             <div class="card">
@@ -241,8 +252,10 @@
                 <a href="word-to-pdf.html" class="tool-btn">Open Tool</a>
             </div>
         </div>
+        </div>
 
         <!-- ================= DESIGN & DEVELOPER TOOLS ================= -->
+        <div class="tool-category" data-category="design">
         <h2 id="design-tools" class="section-title">🎨 Design & Developer Tools</h2>
         <div class="container">
             <div class="card">
@@ -300,8 +313,10 @@
                 <a href="meme-generator.html" class="tool-btn">Open Tool</a>
             </div>
         </div>
+        </div>
 
         <!-- ================= UTILITY TOOLS ================= -->
+        <div class="tool-category" data-category="calculator">
         <h2 id="calculator-tools" class="section-title">🧰 Utility Tools</h2>
         <div class="container">
             <div class="card">
@@ -340,6 +355,7 @@
                 <p>Perform advanced mathematical calculations.</p>
                 <a href="scientific-calculator.html" class="tool-btn">Open Tool</a>
             </div>
+        </div>
         </div>
     </main>
 
@@ -464,6 +480,38 @@
             &copy; 2026 BHARAT TOOLS. All rights reserved. | Made with ❤️ in India
         </div>
     </footer>
+
+    <!--================ CATEGORY FILTER TABS SCRIPT ================-->
+    <script>
+        (function () {
+            var tabs = document.querySelectorAll('.filter-tab');
+            var categories = document.querySelectorAll('.tool-category');
+            tabs.forEach(function (tab) {
+                tab.addEventListener('click', function () {
+                    var filter = tab.getAttribute('data-filter');
+                    tabs.forEach(function (t) {
+                        t.classList.remove('active');
+                        t.style.background = '#fff';
+                        t.style.color = '#4b5563';
+                        t.style.border = '1px solid #d5d9e0';
+                        t.style.fontWeight = '500';
+                    });
+                    tab.classList.add('active');
+                    tab.style.background = '#1a73e8';
+                    tab.style.color = '#fff';
+                    tab.style.border = 'none';
+                    tab.style.fontWeight = '600';
+                    categories.forEach(function (cat) {
+                        if (filter === 'all' || cat.getAttribute('data-category') === filter) {
+                            cat.style.display = '';
+                        } else {
+                            cat.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        })();
+    </script>
 
     <!--================ MAIN SCRIPT (menu, search, animations) ================-->
     <script src="script.js"></script>
