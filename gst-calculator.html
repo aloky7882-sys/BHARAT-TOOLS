@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>GST Calculator - Free Online GST Calculator | BHARAT TOOLS</title>
+    <meta name="description" content="Calculate GST amount instantly. Add or remove GST from any amount with support for 5%, 12%, 18% and 28% slabs. Free, no signup.">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fb;
+            color: #1a2b45;
+        }
+        header {
+            background: linear-gradient(135deg, #2f6fed, #1a4fd6);
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header a.back {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        header .brand {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+        main {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 28px 18px 60px;
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+        .subtitle {
+            text-align: center;
+            color: #5c6b82;
+            font-size: 0.92rem;
+            margin-bottom: 26px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 22px 20px;
+            box-shadow: 0 6px 24px rgba(26, 43, 69, 0.07);
+        }
+        .mode-toggle {
+            display: flex;
+            background: #eef2f9;
+            border-radius: 30px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+        .mode-toggle button {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px 0;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+            border-radius: 26px;
+            cursor: pointer;
+            color: #5c6b82;
+        }
+        .mode-toggle button.active {
+            background: #2f6fed;
+            color: #fff;
+        }
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #38455c;
+            margin: 16px 0 6px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1.5px solid #e0e5ee;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+        }
+        input[type="number"]:focus { border-color: #2f6fed; }
+        .rate-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .rate-grid button {
+            border: 1.5px solid #e0e5ee;
+            background: #fff;
+            padding: 10px 0;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #38455c;
+            cursor: pointer;
+        }
+        .rate-grid button.active {
+            background: #2f6fed;
+            border-color: #2f6fed;
+            color: #fff;
+        }
+        .results {
+            margin-top: 22px;
+            border-top: 1.5px dashed #e0e5ee;
+            padding-top: 18px;
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 0.95rem;
+        }
+        .result-row span:first-child { color: #5c6b82; }
+        .result-row span:last-child { font-weight: 600; }
+        .result-row.total {
+            margin-top: 6px;
+            padding-top: 14px;
+            border-top: 1.5px solid #e0e5ee;
+            font-size: 1.15rem;
+        }
+        .result-row.total span:last-child { color: #1a4fd6; }
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #9aa6b8;
+            font-size: 0.82rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="back">&larr; Back</a>
+        <span class="brand">BHARAT TOOLS</span>
+    </header>
+
+    <main>
+        <h1>🧾 GST Calculator</h1>
+        <p class="subtitle">GST add ya remove karo, seconds me. Free aur bina signup ke.</p>
+
+        <div class="card">
+            <div class="mode-toggle">
+                <button type="button" id="mode-add" class="active">Add GST</button>
+                <button type="button" id="mode-remove">Remove GST</button>
+            </div>
+
+            <label for="amount" id="amount-label">Amount (bina GST ke)</label>
+            <input type="number" id="amount" inputmode="decimal" placeholder="Jaise: 10000" min="0">
+
+            <label>GST Rate</label>
+            <div class="rate-grid">
+                <button type="button" class="rate-btn" data-rate="5">5%</button>
+                <button type="button" class="rate-btn active" data-rate="12">12%</button>
+                <button type="button" class="rate-btn" data-rate="18">18%</button>
+                <button type="button" class="rate-btn" data-rate="28">28%</button>
+                <button type="button" class="rate-btn" data-rate="3">3%</button>
+                <button type="button" class="rate-btn" data-rate="0.25">0.25%</button>
+            </div>
+
+            <div class="results">
+                <div class="result-row">
+                    <span id="base-label">Base amount</span>
+                    <span id="base-value">₹0</span>
+                </div>
+                <div class="result-row">
+                    <span id="gst-label">GST (12%)</span>
+                    <span id="gst-value">₹0</span>
+                </div>
+                <div class="result-row total">
+                    <span id="total-label">Total amount</span>
+                    <span id="total-value">₹0</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 BHARAT TOOLS. All rights reserved.
+    </footer>
+
+    <script>
+        (function () {
+            var amountInput = document.getElementById('amount');
+            var modeAddBtn = document.getElementById('mode-add');
+            var modeRemoveBtn = document.getElementById('mode-remove');
+            var rateButtons = document.querySelectorAll('.rate-btn');
+            var amountLabel = document.getElementById('amount-label');
+            var baseLabel = document.getElementById('base-label');
+            var gstLabel = document.getElementById('gst-label');
+            var totalLabel = document.getElementById('total-label');
+            var baseValue = document.getElementById('base-value');
+            var gstValue = document.getElementById('gst-value');
+            var totalValue = document.getElementById('total-value');
+
+            var mode = 'add';
+            var rate = 12;
+
+            function formatINR(num) {
+                return '₹' + num.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+            }
+
+            function calculate() {
+                var amount = parseFloat(amountInput.value) || 0;
+                var base, gst, total;
+
+                if (mode === 'add') {
+                    base = amount;
+                    gst = base * rate / 100;
+                    total = base + gst;
+                } else {
+                    total = amount;
+                    base = total / (1 + rate / 100);
+                    gst = total - base;
+                }
+
+                baseValue.textContent = formatINR(base);
+                gstValue.textContent = formatINR(gst);
+                totalValue.textContent = formatINR(total);
+                gstLabel.textContent = 'GST (' + rate + '%)';
+            }
+
+            function setMode(newMode) {
+                mode = newMode;
+                if (mode === 'add') {
+                    modeAddBtn.classList.add('active');
+                    modeRemoveBtn.classList.remove('active');
+                    amountLabel.textContent = 'Amount (bina GST ke)';
+                    baseLabel.textContent = 'Base amount';
+                    totalLabel.textContent = 'Total amount (GST included)';
+                } else {
+                    modeRemoveBtn.classList.add('active');
+                    modeAddBtn.classList.remove('active');
+                    amountLabel.textContent = 'Amount (GST included)';
+                    baseLabel.textContent = 'Amount before GST';
+                    totalLabel.textContent = 'Total amount';
+                }
+                calculate();
+            }
+
+            modeAddBtn.addEventListener('click', function () { setMode('add'); });
+            modeRemoveBtn.addEventListener('click', function () { setMode('remove'); });
+
+            rateButtons.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    rateButtons.forEach(function (b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    rate = parseFloat(btn.getAttribute('data-rate'));
+                    calculate();
+                });
+            });
+
+            amountInput.addEventListener('input', calculate);
+
+            calculate();
+        })();
+    </script>
+
+</body>
+</html>
