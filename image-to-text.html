@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Image to Text (OCR) - Free Online Text Extractor | BHARAT TOOLS</title>
+    <meta name="description" content="Extract text from any image instantly using AI. Free OCR tool, works in browser, no signup, no upload to server.">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fb;
+            color: #1a2b45;
+        }
+        header {
+            background: linear-gradient(135deg, #2f6fed, #1a4fd6);
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header a.back {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        header .brand {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+        main {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 28px 18px 60px;
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+        .subtitle {
+            text-align: center;
+            color: #5c6b82;
+            font-size: 0.92rem;
+            margin-bottom: 24px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 22px 20px;
+            box-shadow: 0 6px 24px rgba(26, 43, 69, 0.07);
+        }
+        .drop-zone {
+            border: 2px dashed #c3cfe4;
+            border-radius: 14px;
+            padding: 34px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .drop-zone.dragover {
+            border-color: #2f6fed;
+            background: #eef4ff;
+        }
+        .drop-zone .icon {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        .drop-zone p {
+            font-size: 0.9rem;
+            color: #5c6b82;
+        }
+        .drop-zone p strong { color: #2f6fed; }
+        input[type="file"] { display: none; }
+        #preview-wrap {
+            display: none;
+            margin-top: 16px;
+            text-align: center;
+        }
+        #preview-wrap img {
+            max-width: 100%;
+            max-height: 220px;
+            border-radius: 10px;
+            border: 1.5px solid #e0e5ee;
+        }
+        #extract-btn {
+            width: 100%;
+            margin-top: 16px;
+            background: #2f6fed;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 13px 0;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+        }
+        #extract-btn:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+        #status {
+            margin-top: 14px;
+            font-size: 0.85rem;
+            color: #5c6b82;
+            text-align: center;
+            display: none;
+        }
+        #result-wrap {
+            display: none;
+            margin-top: 20px;
+        }
+        #result-wrap label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #38455c;
+            display: block;
+            margin-bottom: 8px;
+        }
+        #result-text {
+            width: 100%;
+            min-height: 140px;
+            border: 1.5px solid #e0e5ee;
+            border-radius: 10px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+        #copy-btn {
+            margin-top: 10px;
+            width: 100%;
+            background: #eef4ff;
+            color: #1a4fd6;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 0;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .privacy-note {
+            margin-top: 18px;
+            font-size: 0.78rem;
+            color: #9aa6b8;
+            text-align: center;
+            line-height: 1.5;
+        }
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #9aa6b8;
+            font-size: 0.82rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="back">&larr; Back</a>
+        <span class="brand">BHARAT TOOLS</span>
+    </header>
+
+    <main>
+        <h1>🔎 Image to Text (OCR)</h1>
+        <p class="subtitle">Kisi bhi photo se text nikaalo, seconds me. AI powered, free.</p>
+
+        <div class="card">
+            <div class="drop-zone" id="drop-zone">
+                <div class="icon">📷</div>
+                <p><strong>Click karo</strong> ya photo yahan drag-drop karo</p>
+            </div>
+            <input type="file" id="file-input" accept="image/*">
+
+            <div id="preview-wrap">
+                <img id="preview-img" alt="Selected image preview">
+            </div>
+
+            <button type="button" id="extract-btn">Text Nikaalo</button>
+
+            <p id="status"></p>
+
+            <div id="result-wrap">
+                <label for="result-text">Nikala hua text</label>
+                <textarea id="result-text" readonly></textarea>
+                <button type="button" id="copy-btn">Copy Text</button>
+            </div>
+
+            <p class="privacy-note">Aapki photo kisi server pe upload nahi hoti — sab kuch aapke browser me hi process hota hai.</p>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 BHARAT TOOLS. All rights reserved.
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
+    <script>
+        (function () {
+            var dropZone = document.getElementById('drop-zone');
+            var fileInput = document.getElementById('file-input');
+            var previewWrap = document.getElementById('preview-wrap');
+            var previewImg = document.getElementById('preview-img');
+            var extractBtn = document.getElementById('extract-btn');
+            var status = document.getElementById('status');
+            var resultWrap = document.getElementById('result-wrap');
+            var resultText = document.getElementById('result-text');
+            var copyBtn = document.getElementById('copy-btn');
+
+            var selectedFile = null;
+
+            dropZone.addEventListener('click', function () { fileInput.click(); });
+
+            dropZone.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+            dropZone.addEventListener('dragleave', function () {
+                dropZone.classList.remove('dragover');
+            });
+            dropZone.addEventListener('drop', function (e) {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    handleFile(e.dataTransfer.files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', function () {
+                if (fileInput.files && fileInput.files[0]) {
+                    handleFile(fileInput.files[0]);
+                }
+            });
+
+            function handleFile(file) {
+                if (!file.type.startsWith('image/')) {
+                    status.style.display = 'block';
+                    status.textContent = 'Sirf image files allowed hain.';
+                    return;
+                }
+                selectedFile = file;
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                    previewWrap.style.display = 'block';
+                    extractBtn.style.display = 'block';
+                    resultWrap.style.display = 'none';
+                    status.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+
+            extractBtn.addEventListener('click', function () {
+                if (!selectedFile) return;
+                extractBtn.disabled = true;
+                extractBtn.textContent = 'Processing...';
+                status.style.display = 'block';
+                status.textContent = 'AI photo padh raha hai, thoda wait karo...';
+                resultWrap.style.display = 'none';
+
+                Tesseract.recognize(selectedFile, 'eng', {
+                    logger: function (m) {
+                        if (m.status === 'recognizing text') {
+                            var pct = Math.round(m.progress * 100);
+                            status.textContent = 'Padh raha hai... ' + pct + '%';
+                        }
+                    }
+                }).then(function (result) {
+                    resultText.value = result.data.text.trim() || 'Koi text nahi mila is image me.';
+                    resultWrap.style.display = 'block';
+                    status.style.display = 'none';
+                    extractBtn.disabled = false;
+                    extractBtn.textContent = 'Text Nikaalo';
+                }).catch(function () {
+                    status.textContent = 'Kuch galat ho gaya, dobara try karo.';
+                    extractBtn.disabled = false;
+                    extractBtn.textContent = 'Text Nikaalo';
+                });
+            });
+
+            copyBtn.addEventListener('click', function () {
+                resultText.select();
+                resultText.setSelectionRange(0, 999999);
+                navigator.clipboard.writeText(resultText.value).then(function () {
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(function () { copyBtn.textContent = 'Copy Text'; }, 1500);
+                });
+            });
+        })();
+    </script>
+
+</body>
+</html>
