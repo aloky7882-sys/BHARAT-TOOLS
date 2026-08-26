@@ -210,7 +210,7 @@ const upload = document.getElementById("upload");
 const dropZone = document.getElementById("dropZone");
 const previewWrapper = document.getElementById("previewWrapper");
 const download = document.getElementById("download");
-const status = document.getElementById("status");
+const statusEl = document.getElementById("status");
 
 let selectedFile = null;
 let convertedHTML = "";
@@ -225,16 +225,16 @@ function processFile(file){
         file.type !== "application/vnd.openxmlformats-officedocument.wordprocessingml.document" &&
         !file.name.toLowerCase().endsWith(".docx")
     ){
-        status.innerText = "❌ Please select a .docx file. (Old .doc format is not supported.)";
-        status.style.color = "#dc3545";
+        statusEl.innerText = "❌ Please select a .docx file. (Old .doc format is not supported.)";
+        statusEl.style.color = "#dc3545";
         download.style.display = "none";
         previewWrapper.style.display = "none";
         return;
     }
 
     selectedFile = file;
-    status.innerText = "Reading document...";
-    status.style.color = "#0d6efd";
+    statusEl.innerText = "Reading document...";
+    statusEl.style.color = "#0d6efd";
     download.style.display = "none";
 
     const reader = new FileReader();
@@ -251,24 +251,24 @@ function processFile(file){
                 download.style.display = "block";
 
                 if(result.messages && result.messages.length > 0){
-                    status.innerText = "✅ Loaded with some formatting simplified. Preview below, then convert.";
+                    statusEl.innerText = "✅ Loaded with some formatting simplified. Preview below, then convert.";
                 } else {
-                    status.innerText = "✅ Document loaded. Preview below, then convert.";
+                    statusEl.innerText = "✅ Document loaded. Preview below, then convert.";
                 }
-                status.style.color = "#198754";
+                statusEl.style.color = "#198754";
 
             })
             .catch(function(err){
                 console.error(err);
-                status.innerText = "❌ Could not read this .docx file.";
-                status.style.color = "#dc3545";
+                statusEl.innerText = "❌ Could not read this .docx file.";
+                statusEl.style.color = "#dc3545";
             });
 
     };
 
     reader.onerror = function(){
-        status.innerText = "❌ Could not read the file.";
-        status.style.color = "#dc3545";
+        statusEl.innerText = "❌ Could not read the file.";
+        statusEl.style.color = "#dc3545";
     };
 
     reader.readAsArrayBuffer(file);
@@ -297,13 +297,13 @@ dropZone.addEventListener("drop", function(e){
 download.addEventListener("click", function(){
 
     if(!convertedHTML || !selectedFile){
-        status.innerText = "❌ Please select a Word file first.";
-        status.style.color = "#dc3545";
+        statusEl.innerText = "❌ Please select a Word file first.";
+        statusEl.style.color = "#dc3545";
         return;
     }
 
-    status.innerText = "Converting to PDF... please wait.";
-    status.style.color = "#0d6efd";
+    statusEl.innerText = "Converting to PDF... please wait.";
+    statusEl.style.color = "#0d6efd";
     download.disabled = true;
 
     const fileName = selectedFile.name.replace(/\.docx$/i, "") + ".pdf";
@@ -321,14 +321,14 @@ download.addEventListener("click", function(){
         .from(previewWrapper)
         .save()
         .then(function(){
-            status.innerText = "🎉 PDF downloaded successfully!";
-            status.style.color = "#28a745";
+            statusEl.innerText = "🎉 PDF downloaded successfully!";
+            statusEl.style.color = "#28a745";
             download.disabled = false;
         })
         .catch(function(err){
             console.error(err);
-            status.innerText = "❌ PDF conversion failed: " + err.message;
-            status.style.color = "#dc3545";
+            statusEl.innerText = "❌ PDF conversion failed: " + err.message;
+            statusEl.style.color = "#dc3545";
             download.disabled = false;
         });
 

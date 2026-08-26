@@ -100,18 +100,18 @@ background:#084298;
 
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-const upload=document.getElementById("upload"),dropZone=document.getElementById("dropZone"),canvas=document.getElementById("canvas"),ctx=canvas.getContext("2d"),download=document.getElementById("download"),fileNameBox=document.getElementById("file-name"),status=document.getElementById("status");
+const upload=document.getElementById("upload"),dropZone=document.getElementById("dropZone"),canvas=document.getElementById("canvas"),ctx=canvas.getContext("2d"),download=document.getElementById("download"),fileNameBox=document.getElementById("file-name"),statusEl=document.getElementById("status");
 let selectedFile=null;
 async function processPDF(file){
 if(!file)return;
-if(file.type!=="application/pdf"&&!file.name.toLowerCase().endsWith(".pdf")){status.innerText="❌ Please select a PDF file.";status.style.color="#dc3545";download.style.display="none";return;}
-selectedFile=file;fileNameBox.innerHTML='<i class="fa-solid fa-circle-check"></i> Selected: '+file.name;status.innerText="Loading PDF...";status.style.color="#0d6efd";download.style.display="none";
+if(file.type!=="application/pdf"&&!file.name.toLowerCase().endsWith(".pdf")){statusEl.innerText="❌ Please select a PDF file.";statusEl.style.color="#dc3545";download.style.display="none";return;}
+selectedFile=file;fileNameBox.innerHTML='<i class="fa-solid fa-circle-check"></i> Selected: '+file.name;statusEl.innerText="Loading PDF...";statusEl.style.color="#0d6efd";download.style.display="none";
 try{
 const data=new Uint8Array(await file.arrayBuffer()),pdf=await pdfjsLib.getDocument({data}).promise,page=await pdf.getPage(1),viewport=page.getViewport({scale:2});
 canvas.width=viewport.width;canvas.height=viewport.height;
 await page.render({canvasContext:ctx,viewport}).promise;
-download.style.display="inline-block";status.innerText="✅ PDF ready. Page 1 of "+pdf.numPages+" is ready to download.";status.style.color="#198754";
-}catch(e){console.error(e);status.innerText="❌ Could not read this PDF file.";status.style.color="#dc3545";}
+download.style.display="inline-block";statusEl.innerText="✅ PDF ready. Page 1 of "+pdf.numPages+" is ready to download.";statusEl.style.color="#198754";
+}catch(e){console.error(e);statusEl.innerText="❌ Could not read this PDF file.";statusEl.style.color="#dc3545";}
 }
 upload.addEventListener("change",()=>processPDF(upload.files[0]));
 dropZone.addEventListener("dragover",e=>{e.preventDefault();dropZone.classList.add("dragover")});
@@ -120,9 +120,9 @@ dropZone.addEventListener("drop",e=>{e.preventDefault();dropZone.classList.remov
 download.addEventListener("click",()=>{
 if(!selectedFile||!canvas.width)return;
 const a=document.createElement("a");a.href=canvas.toDataURL("image/jpeg",.95);a.download=selectedFile.name.replace(/\.pdf$/i,"")+"-page-1.jpg";a.click();
-status.innerText="🎉 JPG Downloaded Successfully!";status.style.color="#28a745";
+statusEl.innerText="🎉 JPG Downloaded Successfully!";statusEl.style.color="#28a745";
 });
-</script>>
+</script>
 
 </body>
 </html>
