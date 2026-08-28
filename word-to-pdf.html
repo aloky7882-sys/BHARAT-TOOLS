@@ -205,12 +205,31 @@ Word to PDF Converter
 </div>
 
 <script>
+window.addEventListener('error', function(e) {
+    var box = document.createElement('div');
+    box.style.cssText = 'background:#dc3545;color:#fff;padding:14px;margin:15px 0;border-radius:8px;font-size:14px;text-align:left;word-break:break-word;';
+    box.textContent = '⚠️ ERROR: ' + e.message + ' (line ' + e.lineno + ')';
+    document.querySelector('.container').prepend(box);
+});
+window.addEventListener('unhandledrejection', function(e) {
+    var box = document.createElement('div');
+    box.style.cssText = 'background:#dc3545;color:#fff;padding:14px;margin:15px 0;border-radius:8px;font-size:14px;text-align:left;word-break:break-word;';
+    box.textContent = '⚠️ PROMISE ERROR: ' + (e.reason && e.reason.message ? e.reason.message : e.reason);
+    document.querySelector('.container').prepend(box);
+});
+</script>
+
+<script>
 
 const upload = document.getElementById("upload");
 const dropZone = document.getElementById("dropZone");
 const previewWrapper = document.getElementById("previewWrapper");
 const download = document.getElementById("download");
 const statusEl = document.getElementById("status");
+
+if (typeof mammoth === "undefined" || typeof html2pdf === "undefined") {
+    document.querySelector(".container").insertAdjacentHTML("afterbegin", '<div style="background:#dc3545;color:#fff;padding:14px;margin-bottom:15px;border-radius:8px;font-size:14px;">⚠️ Zaroori library load nahi ho payi. Internet check karo, ad-blocker off karo, ya page refresh karo.</div>');
+}
 
 let selectedFile = null;
 let convertedHTML = "";
@@ -236,6 +255,12 @@ function processFile(file){
     statusEl.innerText = "Reading document...";
     statusEl.style.color = "#0d6efd";
     download.style.display = "none";
+
+    if (typeof mammoth === "undefined") {
+        statusEl.innerText = "❌ Document reading library load nahi ho payi. Internet check karo, ad-blocker off karo, ya page refresh karo.";
+        statusEl.style.color = "#dc3545";
+        return;
+    }
 
     const reader = new FileReader();
 
@@ -305,6 +330,13 @@ download.addEventListener("click", function(){
     statusEl.innerText = "Converting to PDF... please wait.";
     statusEl.style.color = "#0d6efd";
     download.disabled = true;
+
+    if (typeof html2pdf === "undefined") {
+        statusEl.innerText = "❌ PDF conversion library load nahi ho payi. Internet check karo, ad-blocker off karo, ya page refresh karo.";
+        statusEl.style.color = "#dc3545";
+        download.disabled = false;
+        return;
+    }
 
     const fileName = selectedFile.name.replace(/\.docx$/i, "") + ".pdf";
 

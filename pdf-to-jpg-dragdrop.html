@@ -99,11 +99,31 @@ background:#084298;
 </div>
 
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+window.addEventListener('error', function(e) {
+    var box = document.createElement('div');
+    box.style.cssText = 'background:#dc3545;color:#fff;padding:14px;margin:15px 0;border-radius:8px;font-size:14px;text-align:left;word-break:break-word;';
+    box.textContent = '⚠️ ERROR: ' + e.message + ' (line ' + e.lineno + ')';
+    document.querySelector('.container').prepend(box);
+});
+window.addEventListener('unhandledrejection', function(e) {
+    var box = document.createElement('div');
+    box.style.cssText = 'background:#dc3545;color:#fff;padding:14px;margin:15px 0;border-radius:8px;font-size:14px;text-align:left;word-break:break-word;';
+    box.textContent = '⚠️ PROMISE ERROR: ' + (e.reason && e.reason.message ? e.reason.message : e.reason);
+    document.querySelector('.container').prepend(box);
+});
+</script>
+<script>
+var pdfLibAvailable = typeof pdfjsLib !== "undefined";
+if (!pdfLibAvailable) {
+    document.querySelector(".container").insertAdjacentHTML("afterbegin", '<div style="background:#dc3545;color:#fff;padding:14px;margin-bottom:15px;border-radius:8px;font-size:14px;">⚠️ PDF library load nahi ho payi. Internet check karo, ad-blocker off karo, ya page refresh karo.</div>');
+} else {
+    pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+}
 const upload=document.getElementById("upload"),dropZone=document.getElementById("dropZone"),canvas=document.getElementById("canvas"),ctx=canvas.getContext("2d"),download=document.getElementById("download"),fileNameBox=document.getElementById("file-name"),statusEl=document.getElementById("status");
 let selectedFile=null;
 async function processPDF(file){
 if(!file)return;
+if(!pdfLibAvailable){statusEl.innerText="❌ PDF library load nahi ho payi. Page refresh karke dobara try karo.";statusEl.style.color="#dc3545";return;}
 if(file.type!=="application/pdf"&&!file.name.toLowerCase().endsWith(".pdf")){statusEl.innerText="❌ Please select a PDF file.";statusEl.style.color="#dc3545";download.style.display="none";return;}
 selectedFile=file;fileNameBox.innerHTML='<i class="fa-solid fa-circle-check"></i> Selected: '+file.name;statusEl.innerText="Loading PDF...";statusEl.style.color="#0d6efd";download.style.display="none";
 try{
