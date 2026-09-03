@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Cropper - BHARAT TOOLS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fb, #e8ecf1);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #0d6efd, #084298);
+            padding: 15px 5%;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .navbar h2 {
+            color: #fff;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            color: #0d6efd;
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* Upload */
+        .drop-area {
+            position: relative;
+            background: linear-gradient(135deg, #f8f9fa, #eef5ff);
+            border: 2px dashed #0d6efd;
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .drop-area:hover,
+        .drop-area.dragover {
+            background: linear-gradient(135deg, #eef5ff, #e7f0ff);
+            border-color: #0b5ed7;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(13, 110, 253, 0.2);
+        }
+
+        .drop-area input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0d6efd, #4d9cff);
+            color: #fff;
+            font-size: 40px;
+        }
+
+        .drop-area:hover .upload-icon {
+            transform: scale(1.1);
+        }
+
+        .drop-area h2 {
+            font-size: 24px;
+            color: #0d6efd;
+            margin-bottom: 8px;
+        }
+
+        .drop-area p {
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .upload-formats {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            color: #666;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Controls */
+        .controls-section {
+            background: linear-gradient(135deg, #f8f9fa, #eef5ff);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(13, 110, 253, 0.1);
+            display: none;
+        }
+
+        .controls-section.show {
+            display: block;
+        }
+
+        .controls-section h3 {
+            color: #0d6efd;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-item label {
+            color: #333;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .control-item input {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        /* Presets */
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+        }
+
+        .preset-btn {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: #0d6efd;
+            transition: all 0.3s ease;
+        }
+
+        .preset-btn:hover {
+            background: #0d6efd;
+            color: #fff;
+            border-color: #0d6efd;
+        }
+
+        /* Canvas Area */
+        .canvas-wrapper {
+            display: none;
+            background: linear-gradient(135deg, #f8f9fa, #eef5ff);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(13, 110, 253, 0.1);
+            text-align: center;
+        }
+
+        .canvas-wrapper.show {
+            display: block;
+        }
+
+        .canvas-wrapper h3 {
+            color: #0d6efd;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #dee2e6;
+        }
+
+        img.original-preview {
+            display: none;
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .image-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            font-size: 13px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .info-item label {
+            color: #666;
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .info-item value {
+            color: #0d6efd;
+            font-weight: 700;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .btn.show {
+            display: inline-block;
+        }
+
+        .btn-crop {
+            background: linear-gradient(135deg, #0d6efd, #4d9cff);
+            color: #fff;
+        }
+
+        .btn-crop:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #198754, #20c997);
+            color: #fff;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(25, 135, 84, 0.3);
+        }
+
+        .btn-reset {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .btn-reset:hover {
+            background: #c82333;
+        }
+
+        /* Status */
+        #status {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        #status.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        #status.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        #status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .control-group {
+                grid-template-columns: 1fr;
+            }
+
+            .preset-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <h2>
+        <i class="fas fa-crop"></i>
+        Image Cropper
+    </h2>
+</nav>
+
+<div class="container">
+    <div class="header">
+        <h1>Crop Images</h1>
+        <p>Crop and customize your images with precision tools. Supports JPG, PNG, WEBP.</p>
+    </div>
+
+    <div class="drop-area" id="dropZone">
+        <div class="upload-icon">
+            <i class="fas fa-cloud-arrow-up"></i>
+        </div>
+        <h2>Drag & Drop Image Here</h2>
+        <p>or click to select an image</p>
+        <div class="upload-formats">JPG / PNG / WEBP</div>
+        <input type="file" id="upload" accept="image/*">
+    </div>
+
+    <div id="status"></div>
+
+    <!-- Controls -->
+    <div class="controls-section" id="controlsSection">
+        <h3><i class="fas fa-sliders-h"></i> Crop Settings</h3>
+        
+        <div class="control-group">
+            <div class="control-item">
+                <label>Start X (px)</label>
+                <input type="number" id="x" value="0">
+            </div>
+            <div class="control-item">
+                <label>Start Y (px)</label>
+                <input type="number" id="y" value="0">
+            </div>
+            <div class="control-item">
+                <label>Crop Width (px)</label>
+                <input type="number" id="w">
+            </div>
+            <div class="control-item">
+                <label>Crop Height (px)</label>
+                <input type="number" id="h">
+            </div>
+        </div>
+
+        <div>
+            <label style="color: #0d6efd; font-weight: 700; font-size: 13px; margin-bottom: 10px; display: block;">
+                <i class="fas fa-magic"></i> Quick Presets
+            </label>
+            <div class="preset-buttons">
+                <button class="preset-btn" data-preset="square">🔷 Square</button>
+                <button class="preset-btn" data-preset="16-9">🖥️ 16:9</button>
+                <button class="preset-btn" data-preset="4-3">📺 4:3</button>
+                <button class="preset-btn" data-preset="3-2">📱 3:2</button>
+                <button class="preset-btn" data-preset="thumb">🔷 Thumbnail</button>
+                <button class="preset-btn" data-preset="banner">📊 Banner</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Original Preview -->
+    <img id="originalPreview" class="original-preview">
+
+    <!-- Canvas Area -->
+    <div class="canvas-wrapper" id="canvasWrapper">
+        <h3>✨ Cropped Result</h3>
+        <canvas id="canvas"></canvas>
+        <div class="image-info">
+            <div class="info-item">
+                <label>Crop Size</label>
+                <value id="cropSize">-</value>
+            </div>
+            <div class="info-item">
+                <label>Quality</label>
+                <value>High (PNG)</value>
+            </div>
+        </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="button-group">
+        <button class="btn btn-crop show" id="cropBtn">
+            <i class="fas fa-crop"></i> Crop Image
+        </button>
+        <button class="btn btn-download" id="downloadBtn">
+            <i class="fas fa-download"></i> Download
+        </button>
+        <button class="btn btn-reset" id="resetBtn">
+            <i class="fas fa-redo"></i> Reset
+        </button>
+    </div>
+</div>
+
+<script>
+const upload = document.getElementById("upload");
+const dropZone = document.getElementById("dropZone");
+const xInput = document.getElementById("x");
+const yInput = document.getElementById("y");
+const wInput = document.getElementById("w");
+const hInput = document.getElementById("h");
+const originalPreview = document.getElementById("originalPreview");
+const controlsSection = document.getElementById("controlsSection");
+const cropBtn = document.getElementById("cropBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+const resetBtn = document.getElementById("resetBtn");
+const canvas = document.getElementById("canvas");
+const status = document.getElementById("status");
+const canvasWrapper = document.getElementById("canvasWrapper");
+
+let image = new Image();
+let croppedCanvas = null;
+
+function showStatus(msg, type) {
+    status.className = type;
+    status.innerHTML = msg;
+}
+
+function processFile(file) {
+    if (!file || !file.type.startsWith("image/")) {
+        showStatus("❌ Please select a valid image file.", "error");
+        return;
+    }
+
+    showStatus("⏳ Loading image...", "info");
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        image = new Image();
+        image.onload = () => {
+            originalPreview.src = image.src;
+            originalPreview.style.display = "block";
+
+            wInput.value = Math.round(image.width / 2);
+            hInput.value = Math.round(image.height / 2);
+
+            controlsSection.classList.add("show");
+            cropBtn.classList.add("show");
+
+            showStatus("✅ Image loaded. Set crop area and click Crop.", "success");
+        };
+        image.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+upload.addEventListener("change", (e) => processFile(e.target.files[0]));
+
+dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("dragover");
+});
+
+dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
+
+dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("dragover");
+    processFile(e.dataTransfer.files[0]);
+});
+
+// Presets
+document.querySelectorAll(".preset-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const preset = btn.dataset.preset;
+        const w = image.width;
+        const h = image.height;
+
+        switch(preset) {
+            case "square":
+                const size = Math.min(w, h) * 0.8;
+                wInput.value = Math.round(size);
+                hInput.value = Math.round(size);
+                break;
+            case "16-9":
+                wInput.value = Math.round(w * 0.8);
+                hInput.value = Math.round(w * 0.8 * 9 / 16);
+                break;
+            case "4-3":
+                wInput.value = Math.round(w * 0.8);
+                hInput.value = Math.round(w * 0.8 * 3 / 4);
+                break;
+            case "3-2":
+                wInput.value = Math.round(w * 0.8);
+                hInput.value = Math.round(w * 0.8 * 2 / 3);
+                break;
+            case "thumb":
+                wInput.value = 200;
+                hInput.value = 200;
+                break;
+            case "banner":
+                wInput.value = Math.round(w * 0.8);
+                hInput.value = 200;
+                break;
+        }
+    });
+});
+
+cropBtn.addEventListener("click", () => {
+    const x = parseInt(xInput.value) || 0;
+    const y = parseInt(yInput.value) || 0;
+    const w = parseInt(wInput.value);
+    const h = parseInt(hInput.value);
+
+    if (!w || !h || w <= 0 || h <= 0) {
+        showStatus("❌ Please enter valid crop dimensions.", "error");
+        return;
+    }
+
+    if (x + w > image.width || y + h > image.height) {
+        showStatus("⚠️ Crop area exceeds image bounds. Adjusting...", "info");
+    }
+
+    const ctx = canvas.getContext("2d");
+    canvas.width = w;
+    canvas.height = h;
+    ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
+
+    croppedCanvas = canvas.toDataURL();
+    canvasWrapper.classList.add("show");
+    downloadBtn.classList.add("show");
+
+    document.getElementById("cropSize").textContent = `${w}×${h}px`;
+    showStatus("🎉 Image cropped! Click Download.", "success");
+});
+
+downloadBtn.addEventListener("click", () => {
+    if (!croppedCanvas) return;
+    const a = document.createElement("a");
+    a.href = croppedCanvas;
+    a.download = "cropped-image.png";
+    a.click();
+});
+
+resetBtn.addEventListener("click", () => {
+    xInput.value = 0;
+    yInput.value = 0;
+    wInput.value = Math.round(image.width / 2);
+    hInput.value = Math.round(image.height / 2);
+    canvasWrapper.classList.remove("show");
+    downloadBtn.classList.remove("show");
+    showStatus("", "");
+});
+</script>
+
+</body>
+</html>
