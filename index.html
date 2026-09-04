@@ -638,8 +638,8 @@
             <p>Compress images, convert PDFs, generate QR codes, calculate loans & much more. No signup, no watermark, 100% free.</p>
             
             <div class="hero-buttons">
-                <button class="primary-btn">Explore Tools</button>
-                <button class="secondary-btn">Learn More</button>
+                <button class="primary-btn" onclick="document.getElementById('tools').scrollIntoView({behavior: 'smooth'})">Explore Tools</button>
+                <button class="secondary-btn" onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">Learn More</button>
             </div>
 
             <div class="stats">
@@ -691,53 +691,92 @@
     <div class="tool-wrapper" id="tools">
         <h2 class="section-title">Featured Tools</h2>
         <div class="container">
+
+            <!-- IMAGE TOOLS -->
             <div class="card">
                 <i class="fas fa-compress tool-icon"></i>
                 <h2>Image Compressor</h2>
-                <p>Compress JPG, PNG images without losing quality</p>
-                <a href="image-compressor.html" class="tool-btn">Open Tool</a>
+                <p>Compress JPG, PNG, WEBP with quality control</p>
+                <a href="image-compressor-IMPROVED.html" class="tool-btn">Open Tool</a>
             </div>
+
+            <div class="card">
+                <i class="fas fa-expand tool-icon"></i>
+                <h2>Image Resizer</h2>
+                <p>Resize images with preset dimensions</p>
+                <a href="image-resizer-IMPROVED.html" class="tool-btn">Open Tool</a>
+            </div>
+
+            <div class="card">
+                <i class="fas fa-crop tool-icon"></i>
+                <h2>Image Cropper</h2>
+                <p>Crop images with aspect ratio presets</p>
+                <a href="image-cropper-IMPROVED.html" class="tool-btn">Open Tool</a>
+            </div>
+
+            <!-- PDF TOOLS -->
             <div class="card">
                 <i class="fas fa-file-word tool-icon"></i>
                 <h2>Word to PDF</h2>
                 <p>Convert DOCX files into PDF documents</p>
                 <a href="word-to-pdf-FIXED.html" class="tool-btn">Open Tool</a>
             </div>
+
             <div class="card">
                 <i class="fas fa-file-pdf tool-icon"></i>
                 <h2>PDF to JPG</h2>
                 <p>Convert PDF pages into JPG images</p>
                 <a href="pdf-to-jpg-FIXED.html" class="tool-btn">Open Tool</a>
             </div>
+
             <div class="card">
                 <i class="fas fa-file-excel tool-icon"></i>
                 <h2>Excel to PDF</h2>
                 <p>Convert Excel spreadsheets to PDF</p>
                 <a href="excel-to-pdf-FIXED.html" class="tool-btn">Open Tool</a>
             </div>
+
+            <!-- UTILITY TOOLS -->
             <div class="card">
                 <i class="fas fa-qrcode tool-icon"></i>
                 <h2>QR Generator</h2>
                 <p>Create QR codes for links and text</p>
                 <a href="qr-generator.html" class="tool-btn">Open Tool</a>
             </div>
+
             <div class="card">
                 <i class="fas fa-key tool-icon"></i>
                 <h2>Password Generator</h2>
                 <p>Generate strong, secure passwords</p>
                 <a href="password-generator.html" class="tool-btn">Open Tool</a>
             </div>
+
             <div class="card">
                 <i class="fas fa-palette tool-icon"></i>
                 <h2>Color Palette</h2>
                 <p>Generate beautiful color palettes</p>
                 <a href="color-palette-generator.html" class="tool-btn">Open Tool</a>
             </div>
+
             <div class="card">
                 <i class="fas fa-calculator tool-icon"></i>
                 <h2>EMI Calculator</h2>
-                <p>Calculate monthly loan EMI</p>
+                <p>Calculate monthly loan EMI instantly</p>
                 <a href="emi-calculator.html" class="tool-btn">Open Tool</a>
+            </div>
+
+            <div class="card">
+                <i class="fas fa-file-pdf tool-icon"></i>
+                <h2>PDF Merger</h2>
+                <p>Combine multiple PDF files into one</p>
+                <a href="merge-pdf-dragdrop.html" class="tool-btn">Open Tool</a>
+            </div>
+
+            <div class="card">
+                <i class="fas fa-wand-magic-sparkles tool-icon"></i>
+                <h2>Background Remover</h2>
+                <p>Remove photo backgrounds with AI</p>
+                <a href="background-remover.html" class="tool-btn">Open Tool</a>
             </div>
         </div>
     </div>
